@@ -1,0 +1,97 @@
+@import "tailwindcss";
+@import "./fonts.css";
+@import "./variables.css";
+
+/* =========================================================================
+   ریست عمومی و استایل‌های اصلی بدنه برای پشتیبانی کامل از زبان فارسی و راست‌به‌چپ (RTL)
+   ========================================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--font-main);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-main);
+}
+
+/* اسکرول‌بار سفارشی تاریک متناسب با تم صنعتی */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #091224;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3256;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2b4573;
+}
+
+/* پنل‌های شیشه‌ای تیره با حاشیه ظریف (Glassmorphism & Industrial Panels) */
+.industrial-card {
+  background-color: var(--color-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.industrial-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* افکت درخشش امبر (Industrial Amber Glow) */
+.glow-amber {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+}
+
+/* آیکون‌ها و فیلدهای متنی عددی در محیط راست‌به‌چپ */
+.persian-num {
+  font-family: var(--font-numeric);
+  letter-spacing: 0.02em;
+}
+
+/* پوشش استایل برای AG Grid جهت هماهنگی ۱۰۰٪ با تم سرمه‌ای و زغال‌سنگ صنعتی */
+.ag-theme-alpine-dark,
+.ag-theme-balham-dark,
+.ag-theme-quartz-dark {
+  --ag-background-color: #0d172c !important;
+  --ag-header-background-color: #13223f !important;
+  --ag-odd-row-background-color: #0f1c34 !important;
+  --ag-border-color: rgba(255, 255, 255, 0.08) !important;
+  --ag-header-foreground-color: #94a3b8 !important;
+  --ag-foreground-color: #f1f5f9 !important;
+  --ag-row-hover-color: #1a2c50 !important;
+  --ag-selected-row-background-color: rgba(245, 158, 11, 0.15) !important;
+  --ag-font-family: var(--font-main) !important;
+}
+
+/* تنظیم دکمه‌های فرم و سلکتورها */
+input, select, textarea, button {
+  font-family: inherit;
+}

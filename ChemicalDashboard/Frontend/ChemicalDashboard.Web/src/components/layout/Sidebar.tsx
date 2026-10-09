@@ -1,0 +1,133 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  TrendingUp,
+  Layers,
+  FileSpreadsheet,
+  Database,
+  Settings,
+  Factory,
+  X,
+} from 'lucide-react';
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface NavItem {
+  to: string;
+  labelFa: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const navItems: NavItem[] = [
+  { to: '/', labelFa: 'داشبورد', icon: LayoutDashboard },
+  { to: '/production', labelFa: 'تحلیل روند و تولید', icon: TrendingUp },
+  { to: '/batch-logs', labelFa: 'سوابق و مقایسه بچ‌ها', icon: Layers },
+  { to: '/inventory', labelFa: 'موجودی و گزارشات انبار', icon: FileSpreadsheet },
+  { to: '/system-status', labelFa: 'داده‌های تست و سلامت سرور', icon: Database },
+];
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  return (
+    <>
+      {/* اوورلی تاریک برای حالت تبلت و موبایل */}
+      {isOpen && (
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="بستن منو"
+          onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') onClose();
+          }}
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+        />
+      )}
+
+      <aside
+        className={`fixed top-0 bottom-0 right-0 z-50 w-64 flex flex-col justify-between border-l border-slate-800/80 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{
+          backgroundImage: `linear-gradient(180deg, rgba(8, 14, 28, 0.93) 0%, rgba(9, 16, 32, 0.96) 65%, rgba(6, 11, 22, 0.98) 100%), url('/images/sidebar-bg.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundColor: '#0a1324',
+        }}
+      >
+        {/* بخش بالایی: لوگو و عنوان سامانه */}
+        <div>
+          <div className="flex items-center justify-between px-5 pt-6 pb-5 border-b border-slate-700/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
+                <Factory className="w-5 h-5 text-slate-950" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-slate-100 tracking-wide font-sans">
+                  Ethyl Acetate
+                </span>
+                <span className="text-[11px] text-amber-400 font-semibold">
+                  خط تولید اتیل استات
+                </span>
+              </div>
+            </div>
+
+            {/* دکمه بستن در موبایل */}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="بستن منوی کناری"
+              className="lg:hidden text-slate-400 hover:text-white p-1 rounded-md"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* منوی ناوبری ثابت (Static Navigation) */}
+          <nav className="p-3 space-y-1.5 mt-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/'}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 select-none ${
+                      isActive
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/25 font-black'
+                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                    }`
+                  }
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span>{item.labelFa}</span>
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* بخش پایینی: شعار صنعتی و نماد خط تولید */}
+        <div className="p-4 border-t border-slate-700/30 bg-black/25">
+          <div className="flex items-center gap-2 text-slate-400 hover:text-slate-200 cursor-pointer p-2 rounded-lg transition-colors text-xs">
+            <Settings className="w-4 h-4 text-slate-400" />
+            <span>تنظیمات سامانه</span>
+          </div>
+          <div className="mt-3 pt-3 border-t border-slate-800/80 text-center">
+            <p className="text-[10px] text-slate-400 font-mono tracking-wider">
+              Better Process, Brighter Tomorrow
+            </p>
+            <p className="text-[9px] text-slate-400 mt-0.5">
+              شرکت پتروشیمی حلال سازان
+            </p>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+};

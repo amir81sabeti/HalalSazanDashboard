@@ -1,0 +1,74 @@
+/* =========================================================================
+   سامانه متغیرها و توکن‌های طراحی (Design System Tokens)
+   پایگاه رنگی تیره صنعتی (Dark Industrial / Petrochemical Navy & Charcoal)
+   ========================================================================= */
+
+:root {
+  /* سطوح و پس‌زمینه‌ها (Surfaces & Backgrounds) */
+  --color-bg-base: #070e1b;
+  --color-bg-sidebar: #0a1324;
+  --color-bg-surface: #101c33;
+  --color-bg-surface-elevated: #162645;
+  --color-bg-surface-translucent: rgba(16, 28, 51, 0.85);
+  --color-bg-card: rgba(16, 28, 51, 0.92);
+  --color-bg-input: #0c1628;
+
+  /* مرزها و جداکننده‌ها (Borders & Dividers) */
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-medium: rgba(255, 255, 255, 0.15);
+  --color-border-accent: rgba(245, 158, 11, 0.4);
+  --color-border-focus: #3b82f6;
+
+  /* متون و تایپوگرافی (Typography & Text) */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-inverse: #070e1b;
+
+  /* رنگ‌های تاکیدی و صنعتی (Industrial Accents) */
+  --color-amber-primary: #f59e0b;
+  --color-amber-hover: #fbbf24;
+  --color-amber-dark: #d97706;
+  --color-amber-glow: rgba(245, 158, 11, 0.25);
+
+  --color-blue-primary: #3b82f6;
+  --color-blue-hover: #60a5fa;
+  --color-blue-dark: #1d4ed8;
+  --color-blue-glow: rgba(59, 130, 246, 0.25);
+
+  --color-cyan-primary: #06b6d4;
+  --color-cyan-hover: #22d3ee;
+
+  --color-green-status: #10b981;
+  --color-green-glow: rgba(16, 185, 129, 0.25);
+
+  --color-red-danger: #ef4444;
+  --color-red-glow: rgba(239, 68, 68, 0.25);
+
+  --color-purple-accent: #8b5cf6;
+  --color-purple-glow: rgba(139, 92, 246, 0.25);
+
+  /* گوشه‌ها و فواصل (Radii & Spacings) */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 9999px;
+
+  /* سایه‌ها (Shadows) */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-glow-amber: 0 0 16px rgba(245, 158, 11, 0.3);
+  --shadow-glow-blue: 0 0 16px rgba(59, 130, 246, 0.3);
+
+  /* تایپوگرافی (Font Families) */
+  --font-main: 'BYekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-title: 'BTitr', 'BYekan', sans-serif;
+  --font-numeric: 'BYekan', Tahoma, sans-serif;
+
+  /* سرعت انیمیشن‌ها (Transitions) */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}

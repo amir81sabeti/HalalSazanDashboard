@@ -1,0 +1,51 @@
+/* =========================================================================
+   پیکربندی فونت‌های فارسی استاندارد سامانه پایش پتروشیمی (HalalSazan)
+   استفاده از فونت‌های محلی یکان، تیتر و هما با اولویت بارگذاری بهینه
+   ========================================================================= */
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('/fonts/BYekan.woff') format('woff'),
+       url('/fonts/BYekan.ttf') format('truetype'),
+       url('/fonts/BYekan.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('/fonts/BYekan.woff') format('woff'),
+       url('/fonts/BYekan.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('/fonts/BYekan.woff') format('woff'),
+       url('/fonts/BYekan.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BTitr';
+  src: url('/fonts/BTitrBold.woff') format('woff'),
+       url('/fonts/BTitrBold.ttf') format('truetype'),
+       url('/fonts/BTitrBold.eot?#iefix') format('embedded-opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BHoma';
+  src: url('/fonts/BHoma.woff') format('woff'),
+       url('/fonts/BHoma.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

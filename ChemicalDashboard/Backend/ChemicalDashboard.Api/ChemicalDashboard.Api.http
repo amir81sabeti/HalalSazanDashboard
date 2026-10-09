@@ -1,0 +1,6 @@
+@ChemicalDashboard.Api_HostAddress = http://localhost:5226
+
+GET {{ChemicalDashboard.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

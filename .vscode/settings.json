@@ -1,0 +1,6 @@
+{
+  "dotnet.defaultSolution": "ChemicalDashboard/ChemicalDashboard.sln",
+  "omnisharp.defaultLaunchSolution": "ChemicalDashboard/ChemicalDashboard.sln",
+  "omnisharp.useModernNet": true,
+  "dotnet.server.useOmnisharp": false
+}
