@@ -11,24 +11,29 @@ import {
   X,
 } from 'lucide-react';
 
+import { PAGES_CONFIG, type PageKey } from '@/config/pages.config';
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 interface NavItem {
+  key: PageKey;
   to: string;
   labelFa: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const navItems: NavItem[] = [
-  { to: '/', labelFa: 'داشبورد', icon: LayoutDashboard },
-  { to: '/production', labelFa: 'تحلیل روند و تولید', icon: TrendingUp },
-  { to: '/batch-logs', labelFa: 'سوابق و مقایسه بچ‌ها', icon: Layers },
-  { to: '/inventory', labelFa: 'موجودی و گزارشات انبار', icon: FileSpreadsheet },
-  { to: '/system-status', labelFa: 'داده‌های تست و سلامت سرور', icon: Database },
+const allNavItems: NavItem[] = [
+  { key: 'dashboard', to: '/', labelFa: 'داشبورد', icon: LayoutDashboard },
+  { key: 'production', to: '/production', labelFa: 'تحلیل روند و تولید', icon: TrendingUp },
+  { key: 'batchLogs', to: '/batch-logs', labelFa: 'سوابق و مقایسه بچ‌ها', icon: Layers },
+  { key: 'inventory', to: '/inventory', labelFa: 'موجودی و گزارشات انبار', icon: FileSpreadsheet },
+  { key: 'systemStatus', to: '/system-status', labelFa: 'داده‌های تست و سلامت سرور', icon: Database },
 ];
+
+const navItems = allNavItems.filter((item) => PAGES_CONFIG[item.key]);
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (

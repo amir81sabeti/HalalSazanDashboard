@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { ProductionLogRecord } from '@/types';
+import { PAGES_CONFIG } from '@/config/pages.config';
 
 interface RecentLogsTableProps {
   logs: ProductionLogRecord[];
@@ -14,12 +15,14 @@ export const RecentLogsTable: React.FC<RecentLogsTableProps> = ({ logs }) => {
         <h3 className="text-xs font-bold text-slate-100">
           آخرین لاگ‌های ثبت شده
         </h3>
-        <Link
-          to="/batch-logs"
-          className="text-[11px] text-blue-400 hover:text-blue-300 font-semibold transition-colors"
-        >
-          مشاهده همه
-        </Link>
+        {PAGES_CONFIG.batchLogs && (
+          <Link
+            to="/batch-logs"
+            className="text-[11px] text-blue-400 hover:text-blue-300 font-semibold transition-colors"
+          >
+            مشاهده همه
+          </Link>
+        )}
       </div>
 
       {/* محتوای اسکرول‌شونده جدول */}

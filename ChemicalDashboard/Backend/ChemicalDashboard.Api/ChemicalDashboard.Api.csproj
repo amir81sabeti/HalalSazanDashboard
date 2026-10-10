@@ -14,6 +14,44 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;$(SpaRoot)dist\**</DefaultItemExcludes>
   </PropertyGroup>
+
+  <!-- مخفی کردن فایل‌های سنگین node_modules و dist از سلوشن اکسپلورر ویژوال استودیو -->
+  <ItemGroup>
+    <Folder Include="ClientApp\" />
+    <Folder Include="wwwroot\" />
+    <Content Remove="$(SpaRoot)node_modules\**" />
+    <Content Remove="$(SpaRoot)dist\**" />
+    <None Remove="$(SpaRoot)node_modules\**" />
+    <None Remove="$(SpaRoot)dist\**" />
+  </ItemGroup>
+
+  <!-- هنگام بیلد در حالت Release: اجرای خودکار بیلد و کپی به wwwroot -->
+  <Target Name="BuildFrontendOnRelease" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+    <Message Importance="high" Text="⚡ در حال کامپایل کدهای فرانت‌اند (Vite Build) برای حالت Release..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" Condition="!Exists('$(SpaRoot)node_modules')" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+    <ItemGroup>
+      <ClientDistFiles Include="$(SpaRoot)dist\**" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ClientDistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- هنگام Publish نهایی: کامپایل فرانت‌اند و قرار دادن خودکار در پوشه publish/wwwroot -->
+  <Target Name="PublishRunVite" AfterTargets="ComputeFilesToPublish">
+    <Message Importance="high" Text="🚀 در حال بیلد فرانت‌اند و بسته‌بندی نهایی در wwwroot برای Publish..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" Condition="!Exists('$(SpaRoot)node_modules')" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -1,9 +1,25 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChemicalDashboard", "ChemicalDashboard", "{53940CCC-1FB8-0E7D-8BC2-E82F5B8CD256}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs & Architecture", "Docs & Architecture", "{D2B3F019-E43A-4D78-9B16-419FE0C70025}"
+	ProjectSection(SolutionItems) = preProject
+		ChemicalDashboard\Backend_Architecture_Roadmap.md = ChemicalDashboard\Backend_Architecture_Roadmap.md
+		ChemicalDashboard\Backend_Request_Flow.jpg = ChemicalDashboard\Backend_Request_Flow.jpg
+		ChemicalDashboard\README.md = ChemicalDashboard\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend (ClientApp)", "Frontend (ClientApp)", "{E3F90A51-9E2B-4560-A821-6D98205C8EF1}"
+	ProjectSection(SolutionItems) = preProject
+		ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\index.html = ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\index.html
+		ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\package.json = ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\package.json
+		ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\tsconfig.json = ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\tsconfig.json
+		ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\vite.config.ts = ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\vite.config.ts
+		ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\README.md = ChemicalDashboard\Backend\ChemicalDashboard.Api\ClientApp\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{7477F8E0-3128-23FB-7667-9C13D4C90C11}"
 EndProject

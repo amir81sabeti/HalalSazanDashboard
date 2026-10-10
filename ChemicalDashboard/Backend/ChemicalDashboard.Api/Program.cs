@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Chemical Dashboard API - سیستم پایش تولید اتیل استات",
         Version = "v1",
-        Description = "API معماری پایه داشبورد صنعتی تولید اتیل استات (شامل اندپوینت‌های تستی دیتابیس و بررسی سلامت سرویس)"
+        Description = "API معماری پایه داشبورد صن عتی تولید اتیل استات (شامل اندپوینت‌های تستی دیتابیس و بررسی سلامت سرویس)"
     });
 });
 
@@ -64,12 +64,38 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
         c.DefaultModelsExpandDepth(1);
     });
+
+    // باز کردن خودکار تب فرانت‌اند در کنار تب سواگر موقع استارت در ویژوال استودیو
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(700);
+            try
+            {
+                var baseUrl = app.Urls.FirstOrDefault(u => u.StartsWith("https://"))
+                           ?? app.Urls.FirstOrDefault()
+                           ?? "https://localhost:7061";
+
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = baseUrl,
+                    UseShellExecute = true
+                });
+            }
+            catch
+            {
+                // نادیده گرفتن خطا در محیط‌های فاقد رابط گرافیکی
+            }
+        });
+    });
 }
 
-// هدایت خودکار مسیر اصلی برنامه به صفحه سواگر (اگر کاربر مستقیماً ریشه سایت را باز کند به /swagger منتقل می‌شود)
-app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+// فعال‌سازی سرویس‌دهی فایل‌های استاتیک فرانت‌اند کامپایل شده در wwwroot
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
-// فعال‌سازی سیاست CORS جهت برقراری ارتباط با رابط کاربری
+// فعال‌سازی سیاست CORS جهت برقراری ارتباط با رابط کاربری در محیط توسعه مستقل
 app.UseCors("AllowFrontend");
 
 // تغییر مسیر درخواست‌های HTTP به HTTPS (در محیط عملیاتی)
@@ -77,6 +103,9 @@ app.UseCors("AllowFrontend");
 
 // مسیریابی و نگاشت کنترلرها
 app.MapControllers();
+
+// هدایت تمام درخواست‌های غیر از API به صفحه اصلی فرانت‌اند (پشتیبانی کامل از React Router)
+app.MapFallbackToFile("index.html");
 
 // اجرای برنامه
 app.Run();

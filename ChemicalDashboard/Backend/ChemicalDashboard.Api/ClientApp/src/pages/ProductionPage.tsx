@@ -30,6 +30,7 @@ const initialReactors: ReactorItem[] = [
     name: 'راکتور ۲ (R-102)',
     status: 'در حال واکنش',
     temperature: 94.1,
+
     pressure: 1.62,
     currentBatch: 12,
     feedRate: 1620,
@@ -104,13 +105,12 @@ export const ProductionPage: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-700/30">
               <span className="text-xs font-bold text-slate-100">{r.name}</span>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                  r.statusColor === 'emerald'
-                    ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                    : r.statusColor === 'amber'
+                className={`text-[10px] font-bold px-2 py-0.5 rounded border ${r.statusColor === 'emerald'
+                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                  : r.statusColor === 'amber'
                     ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
                     : 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-                }`}
+                  }`}
               >
                 {r.status}
               </span>
