@@ -18,13 +18,14 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
-      backgroundColor: 'rgba(15, 28, 52, 0.95)',
-      borderColor: 'rgba(255, 255, 255, 0.15)',
-      textStyle: { color: '#f8fafc', fontFamily: 'BYekan', fontSize: 11 },
+      backgroundColor: '#ffffff',
+      borderColor: '#e2e8f0',
+      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
+      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
     },
     legend: {
       data: ['فشار راکتور', 'فشار بالای ستون', 'فشار ورودی کندانسور'],
-      textStyle: { color: '#94a3b8', fontFamily: 'BYekan', fontSize: 9 },
+      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 9 },
       top: 0,
       left: 'center',
     },
@@ -37,9 +38,9 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
     xAxis: {
       type: 'category',
       data: times,
-      axisLine: { lineStyle: { color: '#334155' } },
+      axisLine: { lineStyle: { color: '#cbd5e1' } },
       axisLabel: {
-        color: '#94a3b8',
+        color: '#64748b',
         fontFamily: 'BYekan',
         fontSize: 8,
         rotate: 35,
@@ -48,12 +49,12 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
     yAxis: {
       type: 'value',
       name: '(bar) فشار',
-      nameTextStyle: { color: '#94a3b8', fontSize: 8, fontFamily: 'BYekan' },
+      nameTextStyle: { color: '#64748b', fontSize: 8, fontFamily: 'BYekan' },
       max: 2.5,
       min: 0,
-      axisLine: { lineStyle: { color: '#334155' } },
-      splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
-      axisLabel: { color: '#94a3b8', fontFamily: 'BYekan', fontSize: 8 },
+      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      splitLine: { lineStyle: { color: '#f1f5f9' } },
+      axisLabel: { color: '#64748b', fontFamily: 'BYekan', fontSize: 8 },
     },
     series: [
       {

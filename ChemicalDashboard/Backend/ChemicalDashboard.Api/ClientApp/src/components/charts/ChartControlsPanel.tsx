@@ -59,25 +59,25 @@ export const ChartControlsPanel: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0f1c34]/95 border border-slate-700/50 rounded-xl p-3.5 backdrop-blur-md">
+    <div className="flex flex-col h-full bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
       {/* هدر پنل */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-slate-700/40">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-100">
-          <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
+      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-amber-500" />
           <span>تنظیمات نمودار</span>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-3.5 pt-2.5 pr-0.5 text-xs">
+      <div className="flex-1 overflow-y-auto space-y-3 pt-2 text-xs">
         {/* انتخاب محور X */}
         <div>
-          <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+          <label className="block text-[11px] font-bold text-slate-700 mb-1">
             انتخاب محور X
           </label>
           <select
             value={xAxis}
             onChange={(e) => setXAxis(e.target.value)}
-            className="w-full bg-[#091224] border border-slate-700/60 rounded-md px-2.5 py-1 text-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            className="w-full bg-slate-50 border border-slate-200 rounded-md px-2.5 py-1 text-slate-800 text-xs font-semibold focus:outline-none focus:border-amber-500"
           >
             <option value="تاریخ">تاریخ</option>
             <option value="شماره بچ">شماره بچ</option>
@@ -88,7 +88,7 @@ export const ChartControlsPanel: React.FC = () => {
         {/* انتخاب شاخص‌های Y */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-[11px] font-semibold text-slate-300">
+            <label className="text-[11px] font-bold text-slate-700">
               انتخاب شاخص‌های Y
             </label>
           </div>
@@ -100,9 +100,9 @@ export const ChartControlsPanel: React.FC = () => {
               placeholder="جستجو..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#091224] border border-slate-700/60 rounded-md pr-7 pl-2 py-1 text-slate-200 text-[11px] placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-md pr-7 pl-2 py-1 text-slate-800 text-[11px] placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
             />
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute right-2 top-1.5 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1.5 pointer-events-none" />
           </div>
 
           {/* لیست شاخص‌ها */}
@@ -110,13 +110,13 @@ export const ChartControlsPanel: React.FC = () => {
             {filteredIndicators.map((ind) => (
               <label
                 key={ind.id}
-                className="flex items-center gap-2 py-0.5 text-[11px] text-slate-300 hover:text-white cursor-pointer select-none"
+                className="flex items-center gap-2 py-0.5 text-[11px] text-slate-600 hover:text-slate-900 cursor-pointer select-none"
               >
                 <input
                   type="checkbox"
                   checked={ind.checked}
                   onChange={() => toggleIndicator(ind.id)}
-                  className="rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0 focus:ring-offset-0 accent-amber-500 w-3.5 h-3.5 cursor-pointer"
+                  className="rounded border-slate-300 bg-white text-amber-500 focus:ring-0 focus:ring-offset-0 accent-amber-500 w-3.5 h-3.5 cursor-pointer"
                 />
                 <span className="truncate">{ind.label}</span>
               </label>
@@ -126,7 +126,7 @@ export const ChartControlsPanel: React.FC = () => {
 
         {/* نوع نمودار */}
         <div>
-          <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
             نوع نمودار
           </label>
           <div className="grid grid-cols-4 gap-1">
@@ -145,8 +145,8 @@ export const ChartControlsPanel: React.FC = () => {
                   onClick={() => setChartType(btn.type as any)}
                   className={`flex flex-col items-center justify-center p-1.5 rounded-md border text-[10px] transition-colors ${
                     isActive
-                      ? 'bg-amber-500/20 border-amber-500/60 text-amber-300'
-                      : 'bg-[#091224] border-slate-700/50 text-slate-400 hover:text-slate-200'
+                      ? 'bg-amber-500 border-amber-600 text-white font-bold shadow-xs'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5 mb-0.5" />
@@ -159,7 +159,7 @@ export const ChartControlsPanel: React.FC = () => {
 
         {/* مقیاس نمایش */}
         <div>
-          <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+          <label className="block text-[11px] font-bold text-slate-700 mb-1">
             مقیاس نمایش
           </label>
           <div className="space-y-1">
@@ -171,7 +171,7 @@ export const ChartControlsPanel: React.FC = () => {
             ].map((item) => (
               <label
                 key={item.id}
-                className="flex items-center gap-2 text-[10px] text-slate-300 hover:text-white cursor-pointer select-none"
+                className="flex items-center gap-2 text-[10px] text-slate-600 hover:text-slate-900 cursor-pointer select-none"
               >
                 <input
                   type="radio"
@@ -189,22 +189,22 @@ export const ChartControlsPanel: React.FC = () => {
       </div>
 
       {/* دکمه‌های اقدام پایین پنل */}
-      <div className="pt-3 border-t border-slate-700/40 space-y-2 mt-auto">
+      <div className="pt-2.5 border-t border-slate-100 space-y-1.5 mt-auto">
         <button
           type="button"
           onClick={handleApply}
-          className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-[#0e274d] hover:bg-[#133568] border border-blue-500/40 text-blue-300 text-xs font-bold transition-all shadow-md hover:shadow-blue-900/30 active:scale-[0.98]"
+          className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-[#0e274d] hover:bg-[#133568] text-white text-xs font-bold transition-all shadow-xs active:scale-[0.98]"
         >
-          <Play className="w-3.5 h-3.5 fill-current" />
+          <Play className="w-3 h-3 fill-current" />
           <span>اعمال تغییرات</span>
         </button>
 
         <button
           type="button"
           onClick={handleSaveTemplate}
-          className="w-full flex items-center justify-center gap-1.5 py-1 px-3 rounded-lg bg-transparent hover:bg-slate-800/40 border border-slate-700 text-slate-300 text-[11px] font-medium transition-colors"
+          className="w-full flex items-center justify-center gap-1.5 py-1 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-medium transition-colors"
         >
-          <Bookmark className="w-3 h-3 text-slate-400" />
+          <Bookmark className="w-3 h-3 text-slate-500" />
           <span>ذخیره به عنوان قالب</span>
         </button>
       </div>

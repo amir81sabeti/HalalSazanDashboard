@@ -20,10 +20,11 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
-      backgroundColor: 'rgba(15, 28, 52, 0.95)',
-      borderColor: 'rgba(255, 255, 255, 0.15)',
-      textStyle: { color: '#f8fafc', fontFamily: 'BYekan', fontSize: 11 },
-      axisPointer: { type: 'cross', label: { backgroundColor: '#1e3256' } },
+      backgroundColor: 'rgba(255, 255, 255, 0.98)',
+      borderColor: '#e2e8f0',
+      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
+      axisPointer: { type: 'cross', label: { backgroundColor: '#475569' } },
+      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
     },
     legend: {
       data: [
@@ -32,7 +33,7 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
         'مقدار کل محصول (AZG)',
         'مقدار کل آبگیری (AG)',
       ],
-      textStyle: { color: '#94a3b8', fontFamily: 'BYekan', fontSize: 10 },
+      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 10 },
       top: 0,
       left: 'center',
     },
@@ -46,9 +47,9 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
       {
         type: 'category',
         data: dates,
-        axisLine: { lineStyle: { color: '#334155' } },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
         axisLabel: {
-          color: '#94a3b8',
+          color: '#64748b',
           fontFamily: 'BYekan',
           fontSize: 9,
           rotate: 30,
@@ -59,11 +60,11 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
       {
         type: 'value',
         name: 'سرعت (لیتر/ساعت)',
-        nameTextStyle: { color: '#94a3b8', fontSize: 9, fontFamily: 'BYekan' },
-        axisLine: { lineStyle: { color: '#334155' } },
-        splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
+        nameTextStyle: { color: '#64748b', fontSize: 9, fontFamily: 'BYekan' },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        splitLine: { lineStyle: { color: '#f1f5f9' } },
         axisLabel: {
-          color: '#94a3b8',
+          color: '#64748b',
           fontFamily: 'BYekan',
           fontSize: 9,
           formatter: (val: number) => `${val / 1000}K`,
@@ -72,11 +73,11 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
       {
         type: 'value',
         name: 'مقدار کل (لیتر)',
-        nameTextStyle: { color: '#94a3b8', fontSize: 9, fontFamily: 'BYekan' },
-        axisLine: { lineStyle: { color: '#334155' } },
+        nameTextStyle: { color: '#64748b', fontSize: 9, fontFamily: 'BYekan' },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
         splitLine: { show: false },
         axisLabel: {
-          color: '#94a3b8',
+          color: '#64748b',
           fontFamily: 'BYekan',
           fontSize: 9,
           formatter: (val: number) => `${val / 1000}K`,

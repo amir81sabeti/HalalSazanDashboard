@@ -16,9 +16,10 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      backgroundColor: 'rgba(15, 28, 52, 0.95)',
-      borderColor: 'rgba(255, 255, 255, 0.15)',
-      textStyle: { color: '#f8fafc', fontFamily: 'BYekan', fontSize: 11 },
+      backgroundColor: '#ffffff',
+      borderColor: '#e2e8f0',
+      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
+      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
       formatter: (params: Array<{ name: string; value: number }>) => {
         const p = params[0];
         return `${p.name}: ${p.value.toLocaleString('fa-IR')} لیتر/ساعت`;
@@ -32,10 +33,10 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
     },
     xAxis: {
       type: 'value',
-      axisLine: { lineStyle: { color: '#334155' } },
-      splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
+      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      splitLine: { lineStyle: { color: '#f1f5f9' } },
       axisLabel: {
-        color: '#94a3b8',
+        color: '#64748b',
         fontFamily: 'BYekan',
         fontSize: 8,
         formatter: (val: number) => `${val / 1000}K`,
@@ -44,8 +45,8 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
     yAxis: {
       type: 'category',
       data: reversed.map((d) => d.batchName),
-      axisLine: { lineStyle: { color: '#334155' } },
-      axisLabel: { color: '#94a3b8', fontFamily: 'BYekan', fontSize: 9 },
+      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      axisLabel: { color: '#64748b', fontFamily: 'BYekan', fontSize: 9 },
     },
     series: [
       {
@@ -56,7 +57,7 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
         label: {
           show: true,
           position: 'right',
-          color: '#94a3b8',
+          color: '#475569',
           fontSize: 9,
           fontFamily: 'BYekan',
           formatter: (params: { value: number }) => params.value.toLocaleString('fa-IR'),

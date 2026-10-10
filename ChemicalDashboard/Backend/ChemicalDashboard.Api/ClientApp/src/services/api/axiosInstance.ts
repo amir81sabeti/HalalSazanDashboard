@@ -14,8 +14,7 @@ export interface NormalizedApiError {
  * تعیین آدرس پایه API از متغیرهای محیطی با مقدار پیش‌فرض ایمن برای توسعه
  */
 export const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ||
-  (import.meta.env.PROD ? '' : 'http://localhost:5226');
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
 
 /**
  * کلاینت سراسری Axios با تنظیمات متمرکز، تایم‌اوت و رهگیری درخواست‌ها

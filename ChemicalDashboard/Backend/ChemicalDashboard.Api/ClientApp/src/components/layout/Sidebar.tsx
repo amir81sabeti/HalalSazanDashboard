@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
-          backgroundImage: `linear-gradient(180deg, rgba(8, 14, 28, 0.93) 0%, rgba(9, 16, 32, 0.96) 65%, rgba(6, 11, 22, 0.98) 100%), url('/images/sidebar-bg.png')`,
+          backgroundImage: `linear-gradient(180deg, rgba(10, 18, 38, 0.88) 0%, rgba(10, 18, 38, 0.55) 45%, rgba(8, 15, 30, 0.92) 100%), url('/images/sidebar-bg-right.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundColor: '#0a1324',
@@ -65,16 +65,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       >
         {/* بخش بالایی: لوگو و عنوان سامانه */}
         <div>
-          <div className="flex items-center justify-between px-5 pt-6 pb-5 border-b border-slate-700/30">
+          <div className="flex items-center justify-between px-5 pt-6 pb-5 border-b border-slate-700/40 bg-slate-950/20">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
-                <Factory className="w-5 h-5 text-slate-950" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
+                <Factory className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-slate-100 tracking-wide font-sans">
+                <span className="text-xs font-black text-white tracking-wide font-sans">
                   Ethyl Acetate
                 </span>
-                <span className="text-[11px] text-amber-400 font-semibold">
+                <span className="text-[11px] text-amber-400 font-bold">
                   خط تولید اتیل استات
                 </span>
               </div>
@@ -104,8 +104,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 select-none ${
                       isActive
-                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/25 font-black'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-500/30 font-black'
+                        : 'text-slate-200 hover:bg-slate-800/70 hover:text-white'
                     }`
                   }
                 >
@@ -118,16 +118,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* بخش پایینی: شعار صنعتی و نماد خط تولید */}
-        <div className="p-4 border-t border-slate-700/30 bg-black/25">
-          <div className="flex items-center gap-2 text-slate-400 hover:text-slate-200 cursor-pointer p-2 rounded-lg transition-colors text-xs">
-            <Settings className="w-4 h-4 text-slate-400" />
-            <span>تنظیمات سامانه</span>
+        <div className="p-4 border-t border-slate-700/40 bg-black/40 backdrop-blur-xs">
+          <div className="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer p-2 rounded-lg transition-colors text-xs">
+            <Settings className="w-4 h-4 text-amber-400" />
+            <span className="font-semibold">تنظیمات سامانه</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-center">
-            <p className="text-[10px] text-slate-400 font-mono tracking-wider">
+          <div className="mt-2.5 pt-2.5 border-t border-slate-800/80 text-center">
+            <p className="text-[11px] text-amber-400/90 font-mono tracking-wider font-bold">
               Better Process, Brighter Tomorrow
             </p>
-            <p className="text-[9px] text-slate-400 mt-0.5">
+            <p className="text-[10px] text-slate-300 mt-0.5">
               شرکت پتروشیمی حلال سازان
             </p>
           </div>

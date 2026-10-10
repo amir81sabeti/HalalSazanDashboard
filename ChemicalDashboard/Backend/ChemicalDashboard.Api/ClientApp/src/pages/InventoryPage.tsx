@@ -60,11 +60,11 @@ export const InventoryPage: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 pb-8">
       {/* یادداشت معماری درباره موجودی انبار */}
-      <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-blue-200 text-xs">
-        <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/80 text-blue-900 text-xs">
+        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
         <div>
           <p className="font-bold">وضعیت موجودی انبار و مخازن (Tank Farm Storage):</p>
-          <p className="text-blue-300/80 leading-relaxed mt-0.5">
+          <p className="text-blue-800/80 leading-relaxed mt-0.5">
             مخازن و ترازنامه انبار در این صفحه طبق داده‌های ایستگاه اندازه‌گیری فرموله شده‌اند. با تکمیل وب‌سرویس انبار در بک‌اند، این تراز با سیستم باسکول و تحویل به مشتری همگام خواهد شد.
           </p>
         </div>
@@ -72,8 +72,8 @@ export const InventoryPage: React.FC = () => {
 
       {/* هدر صفحه */}
       <div>
-        <h2 className="text-lg font-bold text-white">موجودی مخازن و اقلام انبار مواد شیمیایی</h2>
-        <p className="text-xs text-slate-400 mt-0.5">پایش ظرفیت مخازن خوراک، حلال‌ها و محصولات تولیدی</p>
+        <h2 className="text-lg font-bold text-slate-900">موجودی مخازن و اقلام انبار مواد شیمیایی</h2>
+        <p className="text-xs text-slate-500 mt-0.5">پایش ظرفیت مخازن خوراک، حلال‌ها و محصولات تولیدی</p>
       </div>
 
       {/* کارت‌های مخازن مزرعه مخازن (Tank Farm) */}
@@ -83,33 +83,33 @@ export const InventoryPage: React.FC = () => {
           return (
             <div
               key={tank.id}
-              className="flex flex-col p-4 rounded-xl bg-[#0f1c34]/90 border border-slate-700/40 backdrop-blur-md"
+              className="flex flex-col p-4 rounded-xl bg-white border border-slate-200/90 shadow-xs"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-slate-700/30">
-                <span className="text-xs font-bold text-slate-100">{tank.id}</span>
-                <span className="text-[10px] text-slate-400 font-mono">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <span className="text-xs font-bold text-slate-900">{tank.id}</span>
+                <span className="text-[10px] text-slate-500 font-mono">
                   {tank.temperature} °C
                 </span>
               </div>
 
               <div className="mt-2.5">
-                <span className="text-xs font-semibold text-slate-300 block truncate">
+                <span className="text-xs font-semibold text-slate-700 block truncate">
                   {tank.material}
                 </span>
 
                 <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-xl font-black text-white font-mono">
+                  <span className="text-xl font-black text-slate-900 font-mono">
                     {tank.currentLevel.toLocaleString('fa-IR')}
                   </span>
-                  <span className="text-xs text-slate-400">{tank.unit}</span>
+                  <span className="text-xs text-slate-500">{tank.unit}</span>
                 </div>
 
                 <div className="mt-3">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
                     <span>ظرفیت تکمیل:</span>
-                    <span className="font-bold text-slate-200">{fillPercent}٪</span>
+                    <span className="font-bold text-slate-800">{fillPercent}٪</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -134,20 +134,20 @@ export const InventoryPage: React.FC = () => {
         <div className="overflow-x-auto p-2">
           <table className="w-full text-right text-xs">
             <thead>
-              <tr className="bg-[#0b1424] text-slate-400 border-b border-slate-700/50">
-                <th className="py-2.5 px-3">نوع تراکنش</th>
-                <th className="py-2.5 px-3">شماره حواله</th>
-                <th className="py-2.5 px-3">ماده شیمیایی</th>
-                <th className="py-2.5 px-3">مخزن مبدا/مقصد</th>
-                <th className="py-2.5 px-3">حجم (لیتر)</th>
-                <th className="py-2.5 px-3">تاریخ و ساعت</th>
-                <th className="py-2.5 px-3">تحویل‌گیرنده/راننده</th>
+              <tr className="bg-slate-50 text-slate-600 border-b border-slate-200">
+                <th className="py-2.5 px-3 font-semibold">نوع تراکنش</th>
+                <th className="py-2.5 px-3 font-semibold">شماره حواله</th>
+                <th className="py-2.5 px-3 font-semibold">ماده شیمیایی</th>
+                <th className="py-2.5 px-3 font-semibold">مخزن مبدا/مقصد</th>
+                <th className="py-2.5 px-3 font-semibold">حجم (لیتر)</th>
+                <th className="py-2.5 px-3 font-semibold">تاریخ و ساعت</th>
+                <th className="py-2.5 px-3 font-semibold">تحویل‌گیرنده/راننده</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-200">
-              <tr className="hover:bg-slate-800/40">
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tr className="hover:bg-slate-50/80 transition-colors">
                 <td className="py-2.5 px-3">
-                  <span className="inline-flex items-center gap-1 text-emerald-400 font-bold text-[11px]">
+                  <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-[11px]">
                     <ArrowDownRight className="w-3.5 h-3.5" />
                     ورود خوراک
                   </span>
@@ -155,13 +155,13 @@ export const InventoryPage: React.FC = () => {
                 <td className="py-2.5 px-3 font-mono">REC-1404-098</td>
                 <td className="py-2.5 px-3">اسید استیک گلاسیال</td>
                 <td className="py-2.5 px-3 font-mono">TK-202</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-slate-100">25,000</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-slate-900">25,000</td>
                 <td className="py-2.5 px-3 font-mono">1404/03/16 11:30</td>
                 <td className="py-2.5 px-3">شرکت حمل پترو ترابر</td>
               </tr>
-              <tr className="hover:bg-slate-800/40">
+              <tr className="hover:bg-slate-50/80 transition-colors">
                 <td className="py-2.5 px-3">
-                  <span className="inline-flex items-center gap-1 text-sky-400 font-bold text-[11px]">
+                  <span className="inline-flex items-center gap-1 text-sky-600 font-bold text-[11px]">
                     <ArrowUpRight className="w-3.5 h-3.5" />
                     خروج محصول
                   </span>
@@ -169,7 +169,7 @@ export const InventoryPage: React.FC = () => {
                 <td className="py-2.5 px-3 font-mono">INV-1404-412</td>
                 <td className="py-2.5 px-3">اتیل استات خالص</td>
                 <td className="py-2.5 px-3 font-mono">TK-101</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-slate-100">30,000</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-slate-900">30,000</td>
                 <td className="py-2.5 px-3 font-mono">1404/03/15 15:00</td>
                 <td className="py-2.5 px-3">مشتری: رنگ و رزین سینا</td>
               </tr>

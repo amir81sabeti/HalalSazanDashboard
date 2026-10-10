@@ -13,7 +13,7 @@ export const AppLayout: React.FC = () => {
   const [endDate] = useState('1404/03/31');
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#070e1b] text-slate-100 select-none">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#edf2f7] text-slate-800 select-none">
       {/* منوی کناری ثابت دسکتاپ و کشویی موبایل */}
       <Sidebar
         isOpen={isSidebarOpen}
@@ -35,7 +35,7 @@ export const AppLayout: React.FC = () => {
         />
 
         {/* ناحیه محتوای پویای صفحه با اسکرول مستقل */}
-        <main className="flex-1 overflow-y-auto p-3 lg:p-4 bg-[#070e1b]">
+        <main className="flex-1 overflow-y-auto p-3 lg:p-4 bg-[#edf2f7]">
           <div className="max-w-[1920px] mx-auto min-h-full">
             <Outlet />
           </div>

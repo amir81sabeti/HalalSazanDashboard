@@ -14,5 +14,17 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    proxy: {
+      '/api': {
+        target: 'https://localhost:7061',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/swagger': {
+        target: 'https://localhost:7061',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });

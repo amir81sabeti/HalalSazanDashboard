@@ -246,11 +246,11 @@ export const BatchLogsPage: React.FC = () => {
       {/* هدر صفحه و کنترل‌های فیلتر */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Layers className="w-5 h-5 text-amber-400" />
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Layers className="w-5 h-5 text-amber-500" />
             <span>سوابق و لاگ‌های خط تولید (Batch Production Logs)</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             جدول داده‌ای پیشرفته بر پایه AG Grid Community با قابلیت مرتب‌سازی و فیلتر
           </p>
         </div>
@@ -263,25 +263,25 @@ export const BatchLogsPage: React.FC = () => {
               placeholder="جستجو در سوابق..."
               value={quickSearch}
               onChange={(e) => setQuickSearch(e.target.value)}
-              className="bg-[#0f1c34] border border-slate-700/60 rounded-lg pr-8 pl-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+              className="bg-white border border-slate-200 rounded-lg pr-8 pl-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 shadow-xs"
             />
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-2.5 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
           </div>
 
           {/* دکمه خروجی اکسل */}
           <button
             type="button"
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-xs transition-colors cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-amber-400" />
+            <Download className="w-3.5 h-3.5 text-amber-500" />
             <span>خروجی CSV</span>
           </button>
         </div>
       </div>
 
       {/* کانتینر جدول حرفه‌ای AG Grid */}
-      <div className="h-[600px] w-full rounded-xl overflow-hidden border border-slate-700/50 bg-[#0f1c34]/90 backdrop-blur-md shadow-xl ag-theme-quartz-dark">
+      <div className="h-[600px] w-full rounded-xl overflow-hidden border border-slate-200 bg-white shadow-xs ag-theme-quartz">
         <AgGridReact
           rowData={filteredData}
           columnDefs={colDefs}

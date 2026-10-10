@@ -63,58 +63,58 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* مرکز / فیلترهای عملیاتی بالا (مطابق اسکرین‌شات مرجع) */}
+        {/* مرکز / فیلترهای عملیاتی بالا (مطابق اسکرین‌شات مرجع با پس‌زمینه سفید تمیز) */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {/* فیلتر سال */}
-          <div className="flex items-center bg-[#0a1324]/90 border border-slate-700/60 rounded-lg px-2.5 py-1 text-slate-200">
-            <span className="text-[11px] text-slate-400 ml-1.5 font-semibold">سال:</span>
+          <div className="flex items-center bg-white/95 border border-slate-200/90 rounded-lg px-2.5 py-1 text-slate-800 shadow-xs">
+            <span className="text-[11px] text-slate-500 ml-1.5 font-semibold">سال:</span>
             <select
               value={year}
               onChange={(e) => onYearChange(e.target.value)}
-              className="bg-transparent border-none text-xs text-white focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-xs text-slate-900 font-bold focus:outline-none cursor-pointer"
             >
-              <option value="1404" className="bg-slate-900">۱۴۰۴</option>
-              <option value="1403" className="bg-slate-900">۱۴۰۳</option>
-              <option value="1402" className="bg-slate-900">۱۴۰۲</option>
+              <option value="1404" className="bg-white text-slate-900">۱۴۰۴</option>
+              <option value="1403" className="bg-white text-slate-900">۱۴۰۳</option>
+              <option value="1402" className="bg-white text-slate-900">۱۴۰۲</option>
             </select>
           </div>
 
           {/* فیلتر راکتور */}
-          <div className="flex items-center bg-[#0a1324]/90 border border-slate-700/60 rounded-lg px-2.5 py-1 text-slate-200">
-            <span className="text-[11px] text-slate-400 ml-1.5 font-semibold">راکتور:</span>
+          <div className="flex items-center bg-white/95 border border-slate-200/90 rounded-lg px-2.5 py-1 text-slate-800 shadow-xs">
+            <span className="text-[11px] text-slate-500 ml-1.5 font-semibold">راکتور:</span>
             <select
               value={reactor}
               onChange={(e) => onReactorChange(e.target.value)}
-              className="bg-transparent border-none text-xs text-white focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-xs text-slate-900 font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-900">همه</option>
-              <option value="1" className="bg-slate-900">راکتور ۱</option>
-              <option value="2" className="bg-slate-900">راکتور ۲</option>
-              <option value="3" className="bg-slate-900">راکتور ۳</option>
-              <option value="4" className="bg-slate-900">راکتور ۴</option>
+              <option value="all" className="bg-white text-slate-900">همه</option>
+              <option value="1" className="bg-white text-slate-900">راکتور ۱</option>
+              <option value="2" className="bg-white text-slate-900">راکتور ۲</option>
+              <option value="3" className="bg-white text-slate-900">راکتور ۳</option>
+              <option value="4" className="bg-white text-slate-900">راکتور ۴</option>
             </select>
           </div>
 
           {/* فیلتر مقطع */}
-          <div className="flex items-center bg-[#0a1324]/90 border border-slate-700/60 rounded-lg px-2.5 py-1 text-slate-200">
-            <span className="text-[11px] text-slate-400 ml-1.5 font-semibold">مقطع:</span>
+          <div className="flex items-center bg-white/95 border border-slate-200/90 rounded-lg px-2.5 py-1 text-slate-800 shadow-xs">
+            <span className="text-[11px] text-slate-500 ml-1.5 font-semibold">مقطع:</span>
             <select
               value={cut}
               onChange={(e) => onCutChange(e.target.value)}
-              className="bg-transparent border-none text-xs text-white focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-xs text-slate-900 font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-900">همه</option>
-              <option value="initial" className="bg-slate-900">مقطع ابتدایی</option>
-              <option value="mid" className="bg-slate-900">مقطع میانی</option>
-              <option value="final" className="bg-slate-900">مقطع نهایی</option>
+              <option value="all" className="bg-white text-slate-900">همه</option>
+              <option value="initial" className="bg-white text-slate-900">مقطع ابتدایی</option>
+              <option value="mid" className="bg-white text-slate-900">مقطع میانی</option>
+              <option value="final" className="bg-white text-slate-900">مقطع نهایی</option>
             </select>
           </div>
 
-          {/* بازه تاریخ و شماره بچ */}
-          <div className="flex items-center bg-[#0a1324]/90 border border-slate-700/60 rounded-lg px-2.5 py-1 text-slate-200">
-            <Calendar className="w-3.5 h-3.5 text-amber-400 ml-2" />
-            <span className="text-slate-400 text-[11px] ml-1.5 font-semibold">بازه:</span>
-            <span className="font-mono text-white text-[11px]">
+          {/* بازه تاریخ */}
+          <div className="flex items-center bg-white/95 border border-slate-200/90 rounded-lg px-2.5 py-1 text-slate-800 shadow-xs">
+            <Calendar className="w-3.5 h-3.5 text-amber-500 ml-2" />
+            <span className="text-slate-500 text-[11px] ml-1.5 font-semibold">بازه:</span>
+            <span className="font-mono text-slate-900 font-bold text-[11px]">
               {startDate} تا {endDate}
             </span>
           </div>

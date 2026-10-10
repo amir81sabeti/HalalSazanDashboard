@@ -15,16 +15,17 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(15, 28, 52, 0.95)',
-      borderColor: 'rgba(255, 255, 255, 0.15)',
-      textStyle: { color: '#f8fafc', fontFamily: 'BYekan', fontSize: 11 },
+      backgroundColor: '#ffffff',
+      borderColor: '#e2e8f0',
+      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
+      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
       formatter: '{b}: {c} لیتر ({d}%)',
     },
     legend: {
       orient: 'vertical',
       right: 10,
       top: 'center',
-      textStyle: { color: '#94a3b8', fontFamily: 'BYekan', fontSize: 10 },
+      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 10 },
       itemWidth: 10,
       itemHeight: 10,
       formatter: (name: string) => {
@@ -40,7 +41,7 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
         style: {
           text: '28,460',
           textAlign: 'center',
-          fill: '#f8fafc',
+          fill: '#0f172a',
           fontSize: 14,
           fontWeight: 'bold',
           fontFamily: 'BYekan',
@@ -53,7 +54,7 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
         style: {
           text: 'لیتر',
           textAlign: 'center',
-          fill: '#94a3b8',
+          fill: '#64748b',
           fontSize: 10,
           fontFamily: 'BYekan',
         },
