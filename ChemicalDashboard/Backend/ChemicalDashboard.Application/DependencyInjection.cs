@@ -18,6 +18,7 @@ public static class DependencyInjection
     {
         // ثبت سرویس تست با طول عمر Scoped (به ازای هر درخواست HTTP)
         services.AddScoped<ITestService, TestService>();
+        services.AddScoped<IProcessChartService, ProcessChartService>();
 
         return services;
     }

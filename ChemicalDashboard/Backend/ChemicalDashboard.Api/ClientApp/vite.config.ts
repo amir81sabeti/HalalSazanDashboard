@@ -11,6 +11,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    outDir: '../wwwroot',
+    emptyOutDir: true,
+  },
   server: {
     port: 5173,
     host: true,

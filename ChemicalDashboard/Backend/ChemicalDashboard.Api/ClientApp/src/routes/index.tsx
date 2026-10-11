@@ -5,12 +5,14 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { ProductionPage } from '@/pages/ProductionPage';
 import { InventoryPage } from '@/pages/InventoryPage';
 import { BatchLogsPage } from '@/pages/BatchLogsPage';
+import { DynamicChartPage } from '@/pages/DynamicChartPage';
 import { SystemStatusPage } from '@/pages/SystemStatusPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { PAGES_CONFIG } from '@/config/pages.config';
 
 // پیدا کردن اولین مسیر فعال در صورت غیرفعال بودن داشبورد اصلی
 const getFallbackPath = (): string => {
+  if (PAGES_CONFIG.dynamicChart) return '/dynamic-chart';
   if (PAGES_CONFIG.production) return '/production';
   if (PAGES_CONFIG.batchLogs) return '/batch-logs';
   if (PAGES_CONFIG.inventory) return '/inventory';
@@ -31,6 +33,14 @@ export const router = createBrowserRouter([
           <Navigate to={getFallbackPath()} replace />
         ),
       },
+      ...(PAGES_CONFIG.dynamicChart
+        ? [
+            {
+              path: 'dynamic-chart',
+              element: <DynamicChartPage />,
+            },
+          ]
+        : []),
       ...(PAGES_CONFIG.production
         ? [
             {

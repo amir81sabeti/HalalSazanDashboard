@@ -6,14 +6,19 @@
    ریست عمومی و استایل‌های اصلی بدنه برای پشتیبانی کامل از زبان فارسی و راست‌به‌چپ (RTL)
    ========================================================================= */
 
+@theme {
+  --font-sans: 'BYekan', Tahoma, Arial, sans-serif;
+  --font-title: 'BTitr', 'BYekan', Tahoma, sans-serif;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-html {
+html, body, #root {
   direction: rtl;
   text-align: right;
-  font-family: var(--font-main);
+  font-family: 'BYekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif !important;
   background-color: var(--color-bg-base);
   color: var(--color-text-primary);
   color-scheme: light;
@@ -28,7 +33,14 @@ body {
   overflow-x: hidden;
   background-color: var(--color-bg-base);
   color: var(--color-text-primary);
-  font-family: var(--font-main);
+}
+
+button, input, select, textarea, optgroup {
+  font-family: 'BYekan', Tahoma, Arial, sans-serif !important;
+}
+
+h1, h2, h3, h4, .font-title {
+  font-family: 'BTitr', 'BYekan', Tahoma, Arial, sans-serif;
 }
 
 /* اسکرول‌بار سفارشی متناسب با تم روشن داشبورد */

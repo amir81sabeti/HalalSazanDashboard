@@ -31,6 +31,12 @@ export const PAGES_CONFIG = {
   inventory: true,
 
   /**
+   * صفحه نمودار تحلیل داینامیک و جامع فرآیند (آدرس '/dynamic-chart')
+   * رسم زنده پارامترهای مهندسی شیمی با فیلتر آبشاری راکتور و بچ
+   */
+  dynamicChart: true,
+
+  /**
    * صفحه داده‌های تست و سلامت سرور (آدرس '/system-status')
    * بررسی اتصال به دیتابیس SQL Server و تست APIها
    */

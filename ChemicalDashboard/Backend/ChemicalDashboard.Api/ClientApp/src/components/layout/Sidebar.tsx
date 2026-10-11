@@ -9,6 +9,7 @@ import {
   Settings,
   Factory,
   X,
+  LineChart,
 } from 'lucide-react';
 
 import { PAGES_CONFIG, type PageKey } from '@/config/pages.config';
@@ -27,6 +28,7 @@ interface NavItem {
 
 const allNavItems: NavItem[] = [
   { key: 'dashboard', to: '/', labelFa: 'داشبورد', icon: LayoutDashboard },
+  { key: 'dynamicChart', to: '/dynamic-chart', labelFa: 'نمودار تحلیل داینامیک', icon: LineChart },
   { key: 'production', to: '/production', labelFa: 'تحلیل روند و تولید', icon: TrendingUp },
   { key: 'batchLogs', to: '/batch-logs', labelFa: 'سوابق و مقایسه بچ‌ها', icon: Layers },
   { key: 'inventory', to: '/inventory', labelFa: 'موجودی و گزارشات انبار', icon: FileSpreadsheet },
@@ -57,9 +59,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
-          backgroundImage: `linear-gradient(180deg, rgba(10, 18, 38, 0.88) 0%, rgba(10, 18, 38, 0.55) 45%, rgba(8, 15, 30, 0.92) 100%), url('/images/sidebar-bg-right.png')`,
+          backgroundImage: `linear-gradient(180deg, rgba(8, 16, 34, 0.68) 0%, rgba(9, 18, 38, 0.35) 45%, rgba(6, 13, 26, 0.75) 100%), url('/images/sidebar-bg-right.png')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center top',
           backgroundColor: '#0a1324',
         }}
       >

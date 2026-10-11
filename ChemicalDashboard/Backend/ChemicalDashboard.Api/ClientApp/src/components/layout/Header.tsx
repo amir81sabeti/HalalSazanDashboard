@@ -35,9 +35,9 @@ export const Header: React.FC<HeaderProps> = ({
     <header
       className="relative w-full border-b border-slate-700/60 shadow-lg overflow-hidden"
       style={{
-        backgroundImage: `linear-gradient(90deg, rgba(7, 14, 27, 0.94) 0%, rgba(9, 18, 36, 0.88) 50%, rgba(7, 14, 27, 0.94) 100%), url('/images/header-bg.png')`,
+        backgroundImage: `linear-gradient(90deg, rgba(7, 14, 27, 0.78) 0%, rgba(8, 17, 34, 0.50) 45%, rgba(6, 12, 24, 0.30) 100%), url('/images/header-bg.png')`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center 40%',
         backgroundColor: '#0a1324',
       }}
     >

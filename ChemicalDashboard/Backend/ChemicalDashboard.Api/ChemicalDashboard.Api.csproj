@@ -28,15 +28,10 @@
     <None Remove="$(SpaRoot)dist\**" />
   </ItemGroup>
 
-  <!-- هنگام بیلد در حالت Release: اجرای خودکار بیلد و کپی به wwwroot -->
-  <Target Name="BuildFrontendOnRelease" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
-    <Message Importance="high" Text="⚡ در حال کامپایل کدهای فرانت‌اند (Vite Build) برای حالت Release..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" Condition="!Exists('$(SpaRoot)node_modules')" />
+  <!-- هنگام هر بیلد در ویژوال استودیو (Debug و Release): اجرای خودکار بیلد و خروجی مستقیم به wwwroot -->
+  <Target Name="BuildFrontendOnBuild" BeforeTargets="Build">
+    <Message Importance="high" Text="⚡ در حال کامپایل کدهای فرانت‌اند (Vite Build) و همگام‌سازی با wwwroot..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
-    <ItemGroup>
-      <ClientDistFiles Include="$(SpaRoot)dist\**" />
-    </ItemGroup>
-    <Copy SourceFiles="@(ClientDistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" />
   </Target>
 
   <!-- هنگام Publish نهایی: کامپایل فرانت‌اند و قرار دادن خودکار در پوشه publish/wwwroot -->
