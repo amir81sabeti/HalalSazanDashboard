@@ -20,6 +20,9 @@ import {
   FlaskConical,
   Sparkles,
   Info,
+  RotateCcw,
+  TrendingUp,
+  Check,
 } from 'lucide-react';
 import {
   useBatches,
@@ -74,9 +77,9 @@ export const DynamicChartPage: React.FC = () => {
   const toast = useToast();
   const echartsRef = useRef<ReactECharts>(null);
 
-  // وضعیت فیلتر راکتور و بچ آبشاری
-  const [selectedReactorId, setSelectedReactorId] = useState<number | undefined>(undefined);
-  const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(undefined);
+  // وضعیت فیلتر راکتور و بچ آبشاری (پیش‌فرض راکتور ۴ و بچ ۱ با داده‌های تست کامل)
+  const [selectedReactorId, setSelectedReactorId] = useState<number | undefined>(2);
+  const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(400019);
 
   // وضعیت تاریخ شمسی
   const [fromDateShamsi, setFromDateShamsi] = useState<string>('');
@@ -106,8 +109,11 @@ export const DynamicChartPage: React.FC = () => {
     if (batches.length > 0) {
       const currentExists = batches.some((b) => b.batchId === selectedBatchId);
       if (!currentExists) {
-        // بچ با بیشترین لاگ یا اولین بچ را انتخاب کن
-        const bestBatch = batches.find((b) => b.logCount > 0) || batches[0];
+        // اولویت با بچ ۱ (۴۰۰۰۱۹) یا بچ با لاگ فرآیندی
+        const bestBatch =
+          batches.find((b) => b.batchId === 400019) ||
+          batches.find((b) => b.logCount > 0) ||
+          batches[0];
         setSelectedBatchId(bestBatch.batchId);
         if (bestBatch.startDateShamsi) setFromDateShamsi(bestBatch.startDateShamsi);
         if (bestBatch.endDateShamsi) setToDateShamsi(bestBatch.endDateShamsi);
@@ -179,7 +185,7 @@ export const DynamicChartPage: React.FC = () => {
     ] as const;
   }, []);
 
-  // محاسبه خلاصه آماری برای شاخص‌های فعال
+  // محاسبه خلاصه آماری برای شاخص‌های فعال با آیکون‌های متناسب
   const metricStats = useMemo(() => {
     if (!chartPoints.length) return [];
     return AVAILABLE_METRICS.filter((m) => activeKeys.has(m.key)).map((m) => {
@@ -187,13 +193,24 @@ export const DynamicChartPage: React.FC = () => {
       const min = Math.min(...values);
       const max = Math.max(...values);
       const avg = values.reduce((a, b) => a + b, 0) / (values.length || 1);
+      const nonZero = values.filter((v) => v > 0);
+      const operating = nonZero.length > 0 ? nonZero[nonZero.length - 1] : (values[values.length - 1] || 0);
       const last = values[values.length - 1] || 0;
+
+      let IconComponent = Activity;
+      if (m.category === 'product') IconComponent = Droplets;
+      else if (m.category === 'temp') IconComponent = Thermometer;
+      else if (m.category === 'pressure') IconComponent = Gauge;
+      else if (m.category === 'chemistry') IconComponent = FlaskConical;
+
       return {
         ...m,
         min: min.toFixed(2),
         max: max.toFixed(2),
         avg: avg.toFixed(2),
         last: last.toFixed(2),
+        operating: operating.toFixed(2),
+        IconComponent,
       };
     });
   }, [chartPoints, activeKeys]);
@@ -471,33 +488,33 @@ export const DynamicChartPage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 pb-10">
-      {/* هدر صفحه: نام ابزار، نشان اتصال دیتابیس و دکمه‌های کنترلی */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-md shadow-amber-500/25">
+      {/* هدر صفحه: نام ابزار، نشان اتصال دیتابیس و دکمه‌های کنترلی با استایل مدرن شیشه‌ای */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-gradient-to-r from-white via-slate-50/80 to-white border border-slate-200/90 rounded-2xl shadow-xs">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-amber-500/25 ring-4 ring-amber-500/10 shrink-0">
             <Activity className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900 font-title">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-lg font-black text-slate-900 font-title tracking-tight">
                 استودیو تحلیل و نمودارساز پیشرفته فرآیند
               </h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 دیتابیس زنده HalalSazan
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
               ترسیم داینامیک و چندمتغیره پارامترهای ترمودینامیکی و سینتیکی فرآیند استریفیکاسیون از روی استورد پروسیجر
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-bold transition-all shadow-2xs hover:border-slate-300 hover:shadow-xs cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-slate-600" />
             <span>خروجی CSV (اکسل)</span>
@@ -505,7 +522,7 @@ export const DynamicChartPage: React.FC = () => {
           <button
             type="button"
             onClick={handleExportImage}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-bold transition-all shadow-2xs hover:border-slate-300 hover:shadow-xs cursor-pointer"
           >
             <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
             <span>دانلود تصویر نمودار</span>
@@ -513,7 +530,7 @@ export const DynamicChartPage: React.FC = () => {
           <button
             type="button"
             onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs shadow-amber-500/20 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-black transition-all shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/30 cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>بازخوانی داده‌ها</span>
@@ -522,33 +539,40 @@ export const DynamicChartPage: React.FC = () => {
       </div>
 
       {/* نوار فیلتر آبشاری: انتخاب راکتور -> فیلتر خودکار بچ -> بازه زمانی شمسی */}
-      <div className="p-4 bg-white border border-slate-200/90 rounded-2xl shadow-xs flex flex-col gap-3">
-        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-            <Filter className="w-4 h-4 text-amber-500" />
+      <div className="p-4 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-2xl shadow-xs flex flex-col gap-3">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-xs font-black text-slate-800">
+            <div className="w-6 h-6 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
+              <Filter className="w-3.5 h-3.5" />
+            </div>
             <span>فیلتر آبشاری راکتور و بچ (Cascading Filter)</span>
           </div>
           {activeBatchInfo && (
-            <span className="text-[11px] text-slate-500 font-semibold">
-              بچ فعال: شماره بچ {activeBatchInfo.batchNumber} (راکتور {activeBatchInfo.reactorId === 1 ? '۳' : '۴'}) | دارای {activeBatchInfo.logCount} لاگ ثبت‌شده
-            </span>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100/80 text-slate-700 text-[11px] font-bold border border-slate-200/70">
+              <Layers className="w-3.5 h-3.5 text-amber-500" />
+              <span>
+                بچ فعال: شماره بچ {activeBatchInfo.batchNumber} (راکتور {activeBatchInfo.reactorId === 1 ? '۳' : '۴'})
+              </span>
+              <span className="text-slate-400">|</span>
+              <span className="text-amber-600">{activeBatchInfo.logCount} لاگ ثبت‌شده</span>
+            </div>
           )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-          {/* ۱. انتخاب راکتور */}
+          {/* ۱. انتخاب راکتور به سبک سگمنت‌کنترل مدرن */}
           <div className="md:col-span-3">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
               انتخاب واحد واکنش (راکتور)
             </label>
-            <div className="grid grid-cols-3 gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/70">
+            <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
               <button
                 type="button"
                 onClick={() => setSelectedReactorId(undefined)}
-                className={`py-1 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`py-1.5 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
                   selectedReactorId === undefined
-                    ? 'bg-white text-amber-600 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
                 همه
@@ -556,10 +580,10 @@ export const DynamicChartPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedReactorId(1)}
-                className={`py-1 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`py-1.5 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
                   selectedReactorId === 1
-                    ? 'bg-white text-amber-600 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
                 راکتور ۳
@@ -567,10 +591,10 @@ export const DynamicChartPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedReactorId(2)}
-                className={`py-1 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                className={`py-1.5 text-center text-xs font-bold rounded-lg transition-all cursor-pointer ${
                   selectedReactorId === 2
-                    ? 'bg-white text-amber-600 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
                 راکتور ۴
@@ -580,32 +604,34 @@ export const DynamicChartPage: React.FC = () => {
 
           {/* ۲. انتخاب بچ فیلتر شده */}
           <div className="md:col-span-4">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
               شماره بچ (فقط بچ‌های راکتور انتخابی)
             </label>
-            <select
-              value={selectedBatchId ?? ''}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : undefined;
-                setSelectedBatchId(val);
-                const b = batches.find((item) => item.batchId === val);
-                if (b?.startDateShamsi) setFromDateShamsi(b.startDateShamsi);
-                if (b?.endDateShamsi) setToDateShamsi(b.endDateShamsi);
-              }}
-              disabled={isBatchesLoading}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-amber-500 focus:bg-white"
-            >
-              {batches.map((b) => (
-                <option key={b.batchId} value={b.batchId}>
-                  بچ {b.batchNumber} (راکتور {b.reactorId === 1 ? '۳' : '۴'}) - {b.logCount} لاگ فرآیندی {b.startDateShamsi ? `[${b.startDateShamsi}]` : ''}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={selectedBatchId ?? ''}
+                onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : undefined;
+                  setSelectedBatchId(val);
+                  const b = batches.find((item) => item.batchId === val);
+                  if (b?.startDateShamsi) setFromDateShamsi(b.startDateShamsi);
+                  if (b?.endDateShamsi) setToDateShamsi(b.endDateShamsi);
+                }}
+                disabled={isBatchesLoading}
+                className="w-full bg-slate-50 border border-slate-200/90 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all cursor-pointer"
+              >
+                {batches.map((b) => (
+                  <option key={b.batchId} value={b.batchId}>
+                    بچ {b.batchNumber} (راکتور {b.reactorId === 1 ? '۳' : '۴'}) - {b.logCount} لاگ فرآیندی {b.startDateShamsi ? `[${b.startDateShamsi}]` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* ۳. فیلتر بازه تاریخ شمسی */}
           <div className="md:col-span-2">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
               از تاریخ شمسی
             </label>
             <div className="relative">
@@ -614,14 +640,14 @@ export const DynamicChartPage: React.FC = () => {
                 placeholder="1405/06/10"
                 value={fromDateShamsi}
                 onChange={(e) => setFromDateShamsi(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-8 pl-2 py-1.5 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200/90 rounded-xl pr-8 pl-2 py-2 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all"
               />
-              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2 pointer-events-none" />
+              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
             </div>
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
               تا تاریخ شمسی
             </label>
             <div className="relative">
@@ -630,9 +656,9 @@ export const DynamicChartPage: React.FC = () => {
                 placeholder="1405/06/20"
                 value={toDateShamsi}
                 onChange={(e) => setToDateShamsi(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-8 pl-2 py-1.5 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200/90 rounded-xl pr-8 pl-2 py-2 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all"
               />
-              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2 pointer-events-none" />
+              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
             </div>
           </div>
 
@@ -649,39 +675,79 @@ export const DynamicChartPage: React.FC = () => {
                   setToDateShamsi('');
                 }
               }}
-              className="w-full py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-semibold bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+              title="بازنشانی تاریخ به پیش‌فرض بچ"
+              className="w-full py-2 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold bg-slate-50 hover:bg-slate-100 transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
-              ریست
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>ریست</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* ردیف کارت‌های آماری شاخص‌های فعال */}
+      {/* ردیف کارت‌های شاخص‌های کلیدی (طراحی لوکس مطابق رفرنس اصلی داشبورد با باکس آیکون پاستلی) */}
       {metricStats.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
-          {metricStats.map((stat) => (
-            <div
-              key={stat.key}
-              className="p-3 bg-white border border-slate-200/90 rounded-xl shadow-2xs flex flex-col justify-between"
-              style={{ borderRight: `3.5px solid ${stat.color}` }}
-            >
-              <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold mb-1">
-                <span className="truncate" title={stat.label}>{stat.label}</span>
-                <span className="text-[10px] text-slate-400">({stat.unit})</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {metricStats.map((stat) => {
+            const Icon = stat.IconComponent;
+            // نمایش عدد شاخص: برای حجم تجمیعی، مقدار ماکزیمم کل را نشان بده. برای سرعت، پیک و میانگین عملیاتی
+            const isCumulative = stat.key === 'productAmount' || stat.key === 'agAmount';
+            const displayValue = isCumulative
+              ? stat.max
+              : stat.last !== '0.00'
+              ? stat.last
+              : stat.operating !== '0.00'
+              ? stat.operating
+              : stat.max;
+
+            const valueBadgeText = isCumulative ? 'مجموع کل' : stat.last !== '0.00' ? 'جاری' : 'پیک عملیاتی';
+
+            return (
+              <div
+                key={stat.key}
+                className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between group"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs font-bold text-slate-500 truncate" title={stat.label}>
+                      {stat.label}
+                    </span>
+                    <div className="flex items-baseline gap-1.5 mt-1.5">
+                      <span className="text-2xl lg:text-3xl font-black text-slate-900 font-numeric tracking-tight">
+                        {Number(displayValue).toLocaleString('fa-IR')}
+                      </span>
+                      <span className="text-xs font-bold text-slate-400 font-numeric">
+                        {stat.unit}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* باکس آیکون پاستلی رنگی مطابق رفرنس اصلی داشبورد */}
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform"
+                    style={{
+                      backgroundColor: `${stat.color}15`,
+                      color: stat.color,
+                      border: `1.5px solid ${stat.color}30`,
+                    }}
+                  >
+                    <Icon className="w-6 h-6" />
+                  </div>
+                </div>
+
+                {/* فوتر اطلاعات آماری کارت */}
+                <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                  <div className="flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                    <span>▲</span>
+                    <span>{valueBadgeText}</span>
+                  </div>
+                  <div className="text-slate-500 font-medium">
+                    میانگین: <strong className="text-slate-800 font-numeric">{Number(stat.avg).toLocaleString('fa-IR')}</strong>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-baseline justify-between">
-                <span className="text-base font-black text-slate-900 font-numeric">
-                  {stat.last}
-                </span>
-                <span className="text-[10px] text-slate-500">جاری</span>
-              </div>
-              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 mt-1 border-t border-slate-100">
-                <span>میانگین: {stat.avg}</span>
-                <span>ماکز: {stat.max}</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -692,17 +758,19 @@ export const DynamicChartPage: React.FC = () => {
           <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs flex flex-col">
             {/* نوار تنظیمات بالای نمودار: نوع نمودار، محور X، مقیاس چندگانه */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-2 border-b border-slate-100 text-xs">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-amber-500" />
-                <span className="font-bold text-slate-800">تنظیمات رسم نمودار:</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 text-slate-800 font-bold">
+                  <SlidersHorizontal className="w-4 h-4 text-amber-500" />
+                  <span>تنظیمات رسم نمودار:</span>
+                </div>
 
                 {/* انتخاب نوع نمودار */}
-                <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/80 mr-2">
+                <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200/80 mr-1">
                   <button
                     type="button"
                     onClick={() => setChartType('line')}
-                    className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                      chartType === 'line' ? 'bg-white text-amber-600 shadow-2xs' : 'text-slate-600'
+                    className={`px-3 py-1 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                      chartType === 'line' ? 'bg-white text-amber-600 shadow-2xs font-black' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     خطی (Line)
@@ -710,8 +778,8 @@ export const DynamicChartPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setChartType('area')}
-                    className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                      chartType === 'area' ? 'bg-white text-amber-600 shadow-2xs' : 'text-slate-600'
+                    className={`px-3 py-1 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                      chartType === 'area' ? 'bg-white text-amber-600 shadow-2xs font-black' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     مساحتی (Area)
@@ -719,8 +787,8 @@ export const DynamicChartPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setChartType('bar')}
-                    className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                      chartType === 'bar' ? 'bg-white text-amber-600 shadow-2xs' : 'text-slate-600'
+                    className={`px-3 py-1 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                      chartType === 'bar' ? 'bg-white text-amber-600 shadow-2xs font-black' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     میله‌ای (Bar)
@@ -728,14 +796,14 @@ export const DynamicChartPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3.5 flex-wrap">
                 {/* انتخاب محور افقی X */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-slate-500 font-semibold">محور افقی (X):</span>
+                  <span className="text-slate-500 font-bold text-xs">محور افقی (X):</span>
                   <select
                     value={xAxisMode}
                     onChange={(e) => setXAxisMode(e.target.value as any)}
-                    className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 font-bold text-slate-700 text-xs focus:outline-none focus:border-amber-500"
+                    className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 font-bold text-slate-800 text-xs focus:outline-none focus:border-amber-500 cursor-pointer"
                   >
                     <option value="dateTime">تاریخ و ساعت کامل</option>
                     <option value="time">فقط ساعت شیفت</option>
@@ -744,23 +812,23 @@ export const DynamicChartPage: React.FC = () => {
                 </div>
 
                 {/* مقیاس چندگانه Multi-Axis */}
-                <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-semibold">
+                <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-bold text-xs">
                   <input
                     type="checkbox"
                     checked={multiAxis}
                     onChange={(e) => setMultiAxis(e.target.checked)}
-                    className="rounded border-slate-300 text-amber-500 focus:ring-0 accent-amber-500 w-3.5 h-3.5"
+                    className="rounded border-slate-300 text-amber-500 focus:ring-0 accent-amber-500 w-4 h-4 cursor-pointer"
                   />
                   <span>مقیاس چندمحوره (Multi-Axis)</span>
                 </label>
 
                 {/* نرم کردن خطوط */}
-                <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-semibold">
+                <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-bold text-xs">
                   <input
                     type="checkbox"
                     checked={smoothCurves}
                     onChange={(e) => setSmoothCurves(e.target.checked)}
-                    className="rounded border-slate-300 text-amber-500 focus:ring-0 accent-amber-500 w-3.5 h-3.5"
+                    className="rounded border-slate-300 text-amber-500 focus:ring-0 accent-amber-500 w-4 h-4 cursor-pointer"
                   />
                   <span>منحنی نرم</span>
                 </label>
@@ -768,7 +836,7 @@ export const DynamicChartPage: React.FC = () => {
             </div>
 
             {/* بوم رندر ECharts */}
-            <div className="w-full h-[510px] relative">
+            <div className="w-full h-[520px] relative">
               {isDataLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-xs z-10">
                   <LoadingState message="در حال استخراج و تحلیل داده‌های استورد پروسیجر..." />
@@ -804,68 +872,99 @@ export const DynamicChartPage: React.FC = () => {
             </div>
 
             {/* نوار فوتر زیر نمودار: دکمه باز کردن جدول داده‌ها */}
-            <div className="flex items-center justify-between pt-2 mt-1 border-t border-slate-100 text-[11px] text-slate-500">
+            <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-100 text-[11px] text-slate-500 flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <span>تعداد کل نقاط ثبت‌شده: <strong className="text-slate-800">{chartPoints.length}</strong> لاگ</span>
+                <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold">
+                  تعداد کل نقاط: <strong className="text-slate-900 font-numeric">{chartPoints.length}</strong> لاگ
+                </span>
                 <span>•</span>
-                <span>تعداد شاخص‌های فعال: <strong className="text-amber-600">{activeKeys.size}</strong> شاخص</span>
+                <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 font-bold border border-amber-200/60">
+                  شاخص‌های فعال: <strong className="text-amber-600 font-numeric">{activeKeys.size}</strong> شاخص
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowTable((prev) => !prev)}
-                className="flex items-center gap-1 text-slate-700 hover:text-amber-600 font-bold transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-slate-700 hover:text-amber-700 hover:bg-amber-50 border border-slate-200/80 font-bold transition-all cursor-pointer"
               >
-                <Table className="w-3.5 h-3.5" />
-                <span>{showTable ? 'مخفی کردن جدول لاگ‌ها' : 'مشاهده جدول خام داده‌ها'}</span>
+                <Table className="w-3.5 h-3.5 text-amber-600" />
+                <span>{showTable ? 'بستن جدول خام داده‌ها' : 'مشاهده جدول خام داده‌ها'}</span>
               </button>
             </div>
           </div>
 
-          {/* جدول جمع‌شونده داده‌های خام لاگ */}
+          {/* جدول جمع‌شونده داده‌های خام لاگ با استایل مدرن و های‌لایت پارامترها */}
           {showTable && chartPoints.length > 0 && (
             <div className="p-4 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-100">
-                <h3 className="text-xs font-bold text-slate-800">
-                  جدول ثبت لاگ‌های بچ {activeBatchInfo?.batchNumber} (راکتور {activeBatchInfo?.reactorId === 1 ? '۳' : '۴'})
-                </h3>
-                <span className="text-[11px] text-slate-400">مطابق داده‌های دیتابیس HalalSazan</span>
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                  <h3 className="text-xs font-black text-slate-800">
+                    جدول ثبت لاگ‌های بچ {activeBatchInfo?.batchNumber} (راکتور {activeBatchInfo?.reactorId === 1 ? '۳' : '۴'})
+                  </h3>
+                </div>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold">
+                  پایگاه داده HalalSazan
+                </span>
               </div>
-              <div className="max-h-72 overflow-y-auto overflow-x-auto text-xs">
+              <div className="max-h-80 overflow-y-auto overflow-x-auto text-xs rounded-xl border border-slate-200/80">
                 <table className="w-full text-right border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold text-[11px]">
-                      <th className="p-2">#</th>
-                      <th className="p-2">ساعت</th>
-                      <th className="p-2">تاریخ شمسی</th>
-                      <th className="p-2">سرعت AZG</th>
-                      <th className="p-2">حجم AZG</th>
-                      <th className="p-2">سرعت AG</th>
-                      <th className="p-2">حجم AG</th>
-                      <th className="p-2">دمای ستون (°C)</th>
-                      <th className="p-2">فشار راکتور (bar)</th>
-                      <th className="p-2">عدد اسیدی</th>
-                      <th className="p-2">اپراتور</th>
-                      <th className="p-2">توضیحات</th>
+                  <thead className="sticky top-0 bg-slate-100/95 backdrop-blur-xs z-10 border-b border-slate-200">
+                    <tr className="text-slate-700 font-black text-[11px]">
+                      <th className="p-2.5">#</th>
+                      <th className="p-2.5">ساعت</th>
+                      <th className="p-2.5">تاریخ شمسی</th>
+                      <th className="p-2.5">سرعت AZG</th>
+                      <th className="p-2.5">حجم AZG</th>
+                      <th className="p-2.5">سرعت AG</th>
+                      <th className="p-2.5">حجم AG</th>
+                      <th className="p-2.5">دمای ستون (°C)</th>
+                      <th className="p-2.5">فشار راکتور (bar)</th>
+                      <th className="p-2.5">عدد اسیدی</th>
+                      <th className="p-2.5">درجه خلوص</th>
+                      <th className="p-2.5">اپراتور</th>
+                      <th className="p-2.5">توضیحات</th>
                     </tr>
                   </thead>
                   <tbody>
                     {chartPoints.map((p, i) => (
                       <tr
                         key={p.id}
-                        className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors text-slate-700 font-semibold"
+                        className="border-b border-slate-100 odd:bg-white even:bg-slate-50/50 hover:bg-amber-50/40 transition-colors text-slate-700 font-semibold"
                       >
-                        <td className="p-2 text-slate-400">{i + 1}</td>
-                        <td className="p-2 font-bold text-slate-900">{p.inspectionTime}</td>
-                        <td className="p-2">{p.logDateShamsi}</td>
-                        <td className="p-2 text-amber-600">{p.productSpeed}</td>
-                        <td className="p-2 text-amber-700">{p.productAmount}</td>
-                        <td className="p-2 text-cyan-600">{p.agSpeed}</td>
-                        <td className="p-2 text-blue-600">{p.agAmount}</td>
-                        <td className="p-2 text-pink-600">{p.distillationTopTemp}</td>
-                        <td className="p-2 text-indigo-600">{p.reactorPressure}</td>
-                        <td className="p-2 text-emerald-600">{p.acidNumber}</td>
-                        <td className="p-2 text-slate-800">{p.operatorName}</td>
-                        <td className="p-2 text-slate-500 text-[11px] max-w-xs truncate" title={p.description}>
+                        <td className="p-2.5 text-slate-400 font-numeric">{i + 1}</td>
+                        <td className="p-2.5 font-bold text-slate-900 font-numeric">{p.inspectionTime}</td>
+                        <td className="p-2.5 font-numeric text-slate-600">{p.logDateShamsi}</td>
+                        <td className="p-2.5">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-black font-numeric">
+                            {p.productSpeed}
+                          </span>
+                        </td>
+                        <td className="p-2.5 font-numeric text-amber-900 font-bold">{p.productAmount}</td>
+                        <td className="p-2.5">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 font-black font-numeric">
+                            {p.agSpeed}
+                          </span>
+                        </td>
+                        <td className="p-2.5 font-numeric text-cyan-900 font-bold">{p.agAmount}</td>
+                        <td className="p-2.5">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-pink-50 text-pink-700 font-black font-numeric">
+                            {p.distillationTopTemp}
+                          </span>
+                        </td>
+                        <td className="p-2.5">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-black font-numeric">
+                            {p.reactorPressure}
+                          </span>
+                        </td>
+                        <td className="p-2.5">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-black font-numeric">
+                            {p.acidNumber}
+                          </span>
+                        </td>
+                        <td className="p-2.5 font-numeric text-slate-700 font-bold">{p.productDegree}%</td>
+                        <td className="p-2.5 text-slate-800 font-bold">{p.operatorName || '-'}</td>
+                        <td className="p-2.5 text-slate-500 text-[11px] max-w-xs truncate" title={p.description}>
                           {p.description || '-'}
                         </td>
                       </tr>
@@ -880,36 +979,38 @@ export const DynamicChartPage: React.FC = () => {
         {/* ستون سمت چپ: پنل انتخابگر جامع شاخص‌ها (۳ ستون از ۱۲ ستون) */}
         <div className="xl:col-span-3 flex flex-col gap-3">
           <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs flex flex-col h-full">
-            <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span className="text-xs font-bold text-slate-800">انتخاب شاخص‌های نمودار</span>
+                <div className="w-6 h-6 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-black text-slate-800">انتخاب شاخص‌های نمودار</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-black shadow-2xs">
                 {activeKeys.size} فعال
               </span>
             </div>
 
-            <p className="text-[11px] text-slate-500 py-2 leading-relaxed">
+            <p className="text-[11px] text-slate-500 py-2.5 leading-relaxed font-medium">
               هر کدام از شاخص‌های زیر را تیک بزنید تا به صورت زنده و با مقیاس مستقل به نمودار اضافه شوند:
             </p>
 
-            <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+            <div className="flex-1 overflow-y-auto space-y-3.5 pr-0.5">
               {categories.map((cat) => {
                 const catMetrics = AVAILABLE_METRICS.filter((m) => m.category === cat.id);
                 const Icon = cat.icon;
                 return (
-                  <div key={cat.id} className="border border-slate-100 rounded-xl p-2.5 bg-slate-50/50">
-                    <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-200/60">
+                  <div key={cat.id} className="border border-slate-200/70 rounded-xl p-3 bg-slate-50/60">
+                    <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200/60">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
                         <Icon className={`w-3.5 h-3.5 ${cat.color}`} />
                         <span>{cat.title}</span>
                       </div>
-                      <div className="flex items-center gap-1 text-[10px]">
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold">
                         <button
                           type="button"
                           onClick={() => selectCategoryAll(cat.id)}
-                          className="text-amber-600 hover:underline cursor-pointer"
+                          className="text-amber-600 hover:text-amber-700 hover:underline cursor-pointer"
                         >
                           همه
                         </button>
@@ -928,24 +1029,30 @@ export const DynamicChartPage: React.FC = () => {
                       {catMetrics.map((m) => {
                         const isChecked = activeKeys.has(m.key);
                         return (
-                          <label
+                          <div
                             key={m.key}
                             onClick={() => toggleMetric(m.key)}
-                            className={`flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-semibold cursor-pointer select-none transition-all ${
+                            className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold cursor-pointer select-none transition-all ${
                               isChecked
-                                ? 'bg-white text-slate-900 border border-slate-200/80 shadow-2xs'
-                                : 'text-slate-500 hover:bg-white/60 hover:text-slate-700'
+                                ? 'bg-white text-slate-900 border-r-4 shadow-2xs ring-1 ring-slate-200/80'
+                                : 'text-slate-500 hover:bg-white/80 hover:text-slate-800'
                             }`}
+                            style={isChecked ? { borderRightColor: m.color } : {}}
                           >
                             <div className="flex items-center gap-2">
                               <span
-                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
                                 style={{ backgroundColor: m.color }}
                               />
                               <span className="text-[11px]">{m.label}</span>
                             </div>
-                            <span className="text-[10px] text-slate-400">({m.unit})</span>
-                          </label>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] text-slate-400 font-numeric">({m.unit})</span>
+                              {isChecked && (
+                                <Check className="w-3.5 h-3.5 text-amber-500" />
+                              )}
+                            </div>
+                          </div>
                         );
                       })}
                     </div>
