@@ -33,6 +33,7 @@ import { formatToShamsiLong } from '@/utils/persianDate';
 import { LoadingState } from '@/components/feedback/LoadingState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { useToast } from '@/hooks/useToast';
+import { PersianDatePicker } from '@/components/common/PersianDatePicker';
 
 interface MetricConfig {
   key: keyof ProcessChartPoint;
@@ -77,9 +78,9 @@ export const DynamicChartPage: React.FC = () => {
   const toast = useToast();
   const echartsRef = useRef<ReactECharts>(null);
 
-  // وضعیت فیلتر راکتور و بچ آبشاری (پیش‌فرض راکتور ۴ و بچ ۱ با داده‌های تست کامل)
-  const [selectedReactorId, setSelectedReactorId] = useState<number | undefined>(2);
-  const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(400019);
+  // وضعیت فیلتر راکتور و بچ آبشاری (پیش‌فرض راکتور ۳ با ۳۵ بچ وارد شده از اکسل)
+  const [selectedReactorId, setSelectedReactorId] = useState<number | undefined>(1);
+  const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(undefined);
 
   // وضعیت تاریخ شمسی
   const [fromDateShamsi, setFromDateShamsi] = useState<string>('');
@@ -629,37 +630,23 @@ export const DynamicChartPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ۳. فیلتر بازه تاریخ شمسی */}
+          {/* ۳. فیلتر بازه تاریخ شمسی با تقویم */}
           <div className="md:col-span-2">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
-              از تاریخ شمسی
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="1405/06/10"
-                value={fromDateShamsi}
-                onChange={(e) => setFromDateShamsi(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/90 rounded-xl pr-8 pl-2 py-2 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all"
-              />
-              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
+            <PersianDatePicker
+              label="از تاریخ شمسی"
+              value={fromDateShamsi}
+              onChange={setFromDateShamsi}
+              placeholder="۱۴۰۴/۰۱/۰۱"
+            />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1.5">
-              تا تاریخ شمسی
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="1405/06/20"
-                value={toDateShamsi}
-                onChange={(e) => setToDateShamsi(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/90 rounded-xl pr-8 pl-2 py-2 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all"
-              />
-              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
+            <PersianDatePicker
+              label="تا تاریخ شمسی"
+              value={toDateShamsi}
+              onChange={setToDateShamsi}
+              placeholder="۱۴۰۴/۱۲/۲۹"
+            />
           </div>
 
           {/* دکمه پاک‌سازی بازه تاریخ */}

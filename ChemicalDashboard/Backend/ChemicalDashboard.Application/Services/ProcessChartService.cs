@@ -60,4 +60,36 @@ public sealed class ProcessChartService : IProcessChartService
 
         return points;
     }
+
+    public async Task<DashboardSummaryResponseDto> GetDashboardSummaryAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default)
+    {
+        var fromDate = filter.FromDate;
+        if (!string.IsNullOrWhiteSpace(filter.FromDateShamsi))
+        {
+            fromDate = PersianDateHelper.ToGregorianDateTime(filter.FromDateShamsi) ?? fromDate;
+        }
+
+        var toDate = filter.ToDate;
+        if (!string.IsNullOrWhiteSpace(filter.ToDateShamsi))
+        {
+            toDate = PersianDateHelper.ToGregorianDateTime(filter.ToDateShamsi) ?? toDate;
+        }
+
+        _logger.LogInformation("دریافت خلاصه داشبورد تحلیلی فرآیند: ReactorId={ReactorId}, BatchId={BatchId}, FromDate={FromDate}, ToDate={ToDate}",
+            filter.ReactorId, filter.BatchId, fromDate, toDate);
+
+        var summary = await _chartRepository.GetDashboardSummaryAsync(filter.ReactorId, filter.BatchId, fromDate, toDate, cancellationToken);
+
+        foreach (var p in summary.TrendPoints)
+        {
+            p.LogDateShamsi = PersianDateHelper.ToShamsiDateString(p.LogDate);
+        }
+
+        foreach (var l in summary.RecentLogs)
+        {
+            l.LogDateShamsi = PersianDateHelper.ToShamsiDateString(l.LogDate);
+        }
+
+        return summary;
+    }
 }

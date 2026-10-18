@@ -21,4 +21,14 @@ public interface IProcessChartRepository
         DateTime? fromDate,
         DateTime? toDate,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// فراخوانی استورد پروسیجر dbo.sp_GetDashboardSummary جهت دریافت اطلاعات خلاصه داشبورد
+    /// </summary>
+    Task<DashboardSummaryResponseDto> GetDashboardSummaryAsync(
+        int? reactorId,
+        int? batchId,
+        DateTime? fromDate,
+        DateTime? toDate,
+        CancellationToken cancellationToken = default);
 }

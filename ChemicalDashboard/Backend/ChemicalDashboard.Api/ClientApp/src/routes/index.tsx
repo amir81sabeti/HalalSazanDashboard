@@ -6,12 +6,16 @@ import { ProductionPage } from '@/pages/ProductionPage';
 import { InventoryPage } from '@/pages/InventoryPage';
 import { BatchLogsPage } from '@/pages/BatchLogsPage';
 import { DynamicChartPage } from '@/pages/DynamicChartPage';
+import { ExcelReportsPage } from '@/pages/ExcelReportsPage';
+import { GoldenBatchPage } from '@/pages/GoldenBatchPage';
 import { SystemStatusPage } from '@/pages/SystemStatusPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { PAGES_CONFIG } from '@/config/pages.config';
 
 // پیدا کردن اولین مسیر فعال در صورت غیرفعال بودن داشبورد اصلی
 const getFallbackPath = (): string => {
+  if (PAGES_CONFIG.goldenBatch) return '/golden-batch';
+  if (PAGES_CONFIG.excelReports) return '/excel-reports';
   if (PAGES_CONFIG.dynamicChart) return '/dynamic-chart';
   if (PAGES_CONFIG.production) return '/production';
   if (PAGES_CONFIG.batchLogs) return '/batch-logs';
@@ -33,6 +37,22 @@ export const router = createBrowserRouter([
           <Navigate to={getFallbackPath()} replace />
         ),
       },
+      ...(PAGES_CONFIG.goldenBatch
+        ? [
+            {
+              path: 'golden-batch',
+              element: <GoldenBatchPage />,
+            },
+          ]
+        : []),
+      ...(PAGES_CONFIG.excelReports
+        ? [
+            {
+              path: 'excel-reports',
+              element: <ExcelReportsPage />,
+            },
+          ]
+        : []),
       ...(PAGES_CONFIG.dynamicChart
         ? [
             {

@@ -44,6 +44,12 @@ public sealed class ProcessChartPointDto
     public decimal AlcoholLiter { get; set; }
     public decimal AlcoholDegree { get; set; }
     public decimal AcidKg { get; set; }
+    public string AcidUnit { get; set; } = "کیلوگرم";
+
+    // آیزوتروپ تزریقی ورودی و نوع محصول خروجی
+    public int InputAzeotropeType { get; set; }
+    public decimal InputAzeotropeAmount { get; set; }
+    public int OutputType { get; set; }
 
     public string OperatorName { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

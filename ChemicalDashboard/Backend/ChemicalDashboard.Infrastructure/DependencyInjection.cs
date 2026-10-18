@@ -28,6 +28,8 @@ public static class DependencyInjection
         // ریپازیتوری‌های دسترسی به داده به صورت Scoped به ازای هر درخواست ثبت می‌شوند
         services.AddScoped<ITestRepository, TestRepository>();
         services.AddScoped<IProcessChartRepository, ProcessChartRepository>();
+        services.AddScoped<IExcelReportRepository, ExcelReportRepository>();
+        services.AddScoped<IGoldenBatchRepository, GoldenBatchRepository>();
 
         // سرویس بررسی سلامت پایگاه داده به صورت Scoped
         services.AddScoped<IDatabaseHealthCheck, DatabaseHealthCheck>();

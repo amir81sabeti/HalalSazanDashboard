@@ -55,4 +55,22 @@ public sealed class ChartController : ControllerBase
         var data = await _chartService.GetChartDataAsync(filter, cancellationToken);
         return Ok(ApiResponse<IReadOnlyList<ProcessChartPointDto>>.Ok(data, $"تعداد {data.Count} نقطه داده فرآیندی با موفقیت واکشی شد."));
     }
+
+    /// <summary>
+    /// دریافت خلاصه جامع داشبورد شامل شاخص‌ها، روندهای تولید، توقفات و آخرین وقایع
+    /// </summary>
+    /// <param name="filter">پارامترهای فیلتر (راکتور، بچ، بازه زمانی)</param>
+    /// <param name="cancellationToken">توکن لغو درخواست</param>
+    [HttpGet("dashboard-summary")]
+    [ProducesResponseType(typeof(ApiResponse<DashboardSummaryResponseDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<DashboardSummaryResponseDto>>> GetDashboardSummary(
+        [FromQuery] ChartFilterRequestDto filter,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("درخواست خلاصه داشبورد با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}, Shamsi={FromShamsi} to {ToShamsi}",
+            filter.ReactorId, filter.BatchId, filter.FromDateShamsi, filter.ToDateShamsi);
+
+        var summary = await _chartService.GetDashboardSummaryAsync(filter, cancellationToken);
+        return Ok(ApiResponse<DashboardSummaryResponseDto>.Ok(summary, "داده‌های خلاصه داشبورد با موفقیت دریافت شد."));
+    }
 }

@@ -10,4 +10,6 @@ public interface IProcessChartService
     Task<IReadOnlyList<BatchFilterItemDto>> GetBatchesForFilterAsync(int? reactorId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ProcessChartPointDto>> GetChartDataAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default);
+
+    Task<DashboardSummaryResponseDto> GetDashboardSummaryAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default);
 }

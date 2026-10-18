@@ -72,4 +72,78 @@ public sealed class ProcessChartRepository : IProcessChartRepository
         var rows = await connection.QueryAsync<ProcessChartPointDto>(command);
         return rows.ToList();
     }
+
+    private const string SpGetDashboardSummary = "dbo.sp_GetDashboardSummary";
+
+    public async Task<DashboardSummaryResponseDto> GetDashboardSummaryAsync(
+        int? reactorId,
+        int? batchId,
+        DateTime? fromDate,
+        DateTime? toDate,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("اجرای پروسیجر {ProcedureName} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}",
+            SpGetDashboardSummary, reactorId, batchId);
+
+        await using var connection = await _connectionFactory.CreateOpenConnectionAsync(cancellationToken);
+
+        var parameters = new DynamicParameters();
+        parameters.Add("@ReactorId", reactorId, DbType.Int32);
+        parameters.Add("@BatchId", batchId, DbType.Int32);
+        parameters.Add("@FromDate", fromDate, DbType.DateTime);
+        parameters.Add("@ToDate", toDate, DbType.DateTime);
+
+        var command = new CommandDefinition(
+            commandText: SpGetDashboardSummary,
+            parameters: parameters,
+            commandType: CommandType.StoredProcedure,
+            cancellationToken: cancellationToken
+        );
+
+        using var multi = await connection.QueryMultipleAsync(command);
+
+        var kpiRow = await multi.ReadFirstOrDefaultAsync<dynamic>();
+        var trendPoints = (await multi.ReadAsync<ChartSeriesPointDto>()).ToList();
+        var recentLogs = (await multi.ReadAsync<RecentLogItemDto>()).ToList();
+        var batchSpeeds = (await multi.ReadAsync<BatchSpeedItemDto>()).ToList();
+        var reactorComparison = (await multi.ReadAsync<ReactorComparisonItemDto>()).ToList();
+
+        var result = new DashboardSummaryResponseDto
+        {
+            TrendPoints = trendPoints,
+            RecentLogs = recentLogs,
+            BatchSpeedAverages = batchSpeeds,
+            ReactorComparison = reactorComparison
+        };
+
+        if (kpiRow != null)
+        {
+            result.Kpis = new KpiMetricsSummaryDto
+            {
+                LogCount = (int)(kpiRow.LogCount ?? 0),
+                TotalProductAmount = (decimal)(kpiRow.TotalProductAmount ?? 0m),
+                TotalAGAmount = (decimal)(kpiRow.TotalAGAmount ?? 0m),
+                AvgProductDegree = Math.Round((decimal)(kpiRow.AvgProductDegree ?? 0m), 1),
+                AvgAcidNumber = Math.Round((decimal)(kpiRow.AvgAcidNumber ?? 0m), 2)
+            };
+
+            DateTime? batchStart = kpiRow.CurrentBatchStartDate;
+            double elapsedHours = 0;
+            if (batchStart.HasValue)
+            {
+                elapsedHours = Math.Max(0, Math.Round((DateTime.Now - batchStart.Value).TotalHours, 1));
+            }
+
+            result.StatusInfo = new ProductionStatusSummaryDto
+            {
+                IsActive = (bool)(kpiRow.IsActive ?? false),
+                CurrentBatchNumber = (int)(kpiRow.CurrentBatchNumber ?? 0),
+                CurrentReactorNumber = (int)(kpiRow.CurrentReactorId ?? 1) == 1 ? 3 : 4,
+                ElapsedHours = elapsedHours
+            };
+        }
+
+        return result;
+    }
 }
+

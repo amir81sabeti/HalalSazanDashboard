@@ -10,6 +10,7 @@ import {
   Factory,
   X,
   LineChart,
+  Trophy,
 } from 'lucide-react';
 
 import { PAGES_CONFIG, type PageKey } from '@/config/pages.config';
@@ -28,6 +29,8 @@ interface NavItem {
 
 const allNavItems: NavItem[] = [
   { key: 'dashboard', to: '/', labelFa: 'داشبورد', icon: LayoutDashboard },
+  { key: 'goldenBatch', to: '/golden-batch', labelFa: 'تحلیل بچ طلایی و راندمان', icon: Trophy },
+  { key: 'excelReports', to: '/excel-reports', labelFa: 'گزارش‌گیری جامع اکسل', icon: FileSpreadsheet },
   { key: 'dynamicChart', to: '/dynamic-chart', labelFa: 'نمودار تحلیل داینامیک', icon: LineChart },
   { key: 'production', to: '/production', labelFa: 'تحلیل روند و تولید', icon: TrendingUp },
   { key: 'batchLogs', to: '/batch-logs', labelFa: 'سوابق و مقایسه بچ‌ها', icon: Layers },
