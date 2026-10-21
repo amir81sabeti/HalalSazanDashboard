@@ -5,7 +5,23 @@ import { fileURLToPath, URL } from 'node:url';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    {
+      name: 'prevent-online-fonts',
+      transform(code) {
+        if (code.includes('fonts.googleapis.com')) {
+          code = code.replace(/fonts\.googleapis\.com/g, '127.0.0.1/offline-stub');
+          code = code.replace(/https:\/\/\$\{[a-zA-Z0-9_]+\}\/css2\?[^'"`]+/g, '/fonts/offline-font.css');
+          return {
+            code,
+            map: null,
+          };
+        }
+      },
+    },
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
