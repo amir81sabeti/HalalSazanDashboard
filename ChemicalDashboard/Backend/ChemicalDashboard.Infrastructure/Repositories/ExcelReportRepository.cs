@@ -49,15 +49,18 @@ public sealed class ExcelReportRepository : IExcelReportRepository
     }
 
     public async Task<IReadOnlyList<ExcelMonthlyProductionItemDto>> GetMonthlyProductionReportAsync(
-        int? reactorId, int? batchId, int? year, CancellationToken cancellationToken = default)
+        int? reactorId, int? batchId, string? batchIds, string? batchNumbers, int? year, int? month, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}, Year={Year}", SpMonthly, reactorId, batchId, year);
+        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}, Year={Year}, Month={Month}", SpMonthly, reactorId, batchId, year, month);
         await using var connection = await _connectionFactory.CreateOpenConnectionAsync(cancellationToken);
 
         var parameters = new DynamicParameters();
         parameters.Add("@ReactorId", reactorId, DbType.Int32);
         parameters.Add("@BatchId", batchId, DbType.Int32);
+        parameters.Add("@BatchIds", batchIds, DbType.String);
+        parameters.Add("@BatchNumbers", batchNumbers, DbType.String);
         parameters.Add("@Year", year, DbType.Int32);
+        parameters.Add("@Month", month, DbType.Int32);
 
         var command = new CommandDefinition(SpMonthly, parameters, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
         var rows = await connection.QueryAsync<ExcelMonthlyProductionItemDto>(command);
@@ -66,14 +69,18 @@ public sealed class ExcelReportRepository : IExcelReportRepository
     }
 
     public async Task<IReadOnlyList<ExcelQualityStabilityItemDto>> GetQualityStabilityReportAsync(
-        int? reactorId, int? batchId, DateTime? fromDate, DateTime? toDate, CancellationToken cancellationToken = default)
+        int? reactorId, int? batchId, string? batchIds, string? batchNumbers, int? year, int? month, DateTime? fromDate, DateTime? toDate, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}", SpQuality, reactorId, batchId);
+        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}, Year={Year}, Month={Month}", SpQuality, reactorId, batchId, year, month);
         await using var connection = await _connectionFactory.CreateOpenConnectionAsync(cancellationToken);
 
         var parameters = new DynamicParameters();
         parameters.Add("@ReactorId", reactorId, DbType.Int32);
         parameters.Add("@BatchId", batchId, DbType.Int32);
+        parameters.Add("@BatchIds", batchIds, DbType.String);
+        parameters.Add("@BatchNumbers", batchNumbers, DbType.String);
+        parameters.Add("@Year", year, DbType.Int32);
+        parameters.Add("@Month", month, DbType.Int32);
         parameters.Add("@FromDate", fromDate, DbType.DateTime);
         parameters.Add("@ToDate", toDate, DbType.DateTime);
 
@@ -132,14 +139,15 @@ public sealed class ExcelReportRepository : IExcelReportRepository
     }
 
     public async Task<IReadOnlyList<ExcelMassBalanceItemDto>> GetMassBalanceReportAsync(
-        int? reactorId, int? batchId, CancellationToken cancellationToken = default)
+        int? reactorId, int? batchId, int? year, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}", SpMassBalance, reactorId, batchId);
+        _logger.LogInformation("اجرای پروسیجر {Sp} با فیلترها: ReactorId={ReactorId}, BatchId={BatchId}, Year={Year}", SpMassBalance, reactorId, batchId, year);
         await using var connection = await _connectionFactory.CreateOpenConnectionAsync(cancellationToken);
 
         var parameters = new DynamicParameters();
         parameters.Add("@ReactorId", reactorId, DbType.Int32);
         parameters.Add("@BatchId", batchId, DbType.Int32);
+        parameters.Add("@Year", year, DbType.Int32);
 
         var command = new CommandDefinition(SpMassBalance, parameters, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
         var rows = await connection.QueryAsync<ExcelMassBalanceItemDto>(command);

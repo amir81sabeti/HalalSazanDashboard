@@ -73,15 +73,18 @@ public sealed class ExcelReportService : IExcelReportService
 
     public async Task<IReadOnlyList<ExcelMonthlyProductionItemDto>> GetMonthlyProductionReportAsync(ChartFilterRequestDto filter, int? year, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("دریافت گزارش تولید در ماه: Reactor={Reactor}, Batch={Batch}, Year={Year}", filter.ReactorId, filter.BatchId, year);
-        return await _repository.GetMonthlyProductionReportAsync(filter.ReactorId, filter.BatchId, year, cancellationToken);
+        int? effectiveYear = year ?? filter.Year;
+        _logger.LogInformation("دریافت گزارش تولید در ماه: Reactor={Reactor}, Batch={Batch}, Year={Year}, Month={Month}", filter.ReactorId, filter.BatchId, effectiveYear, filter.Month);
+        return await _repository.GetMonthlyProductionReportAsync(
+            filter.ReactorId, filter.BatchId, filter.BatchIds, filter.BatchNumbers, effectiveYear, filter.Month, cancellationToken);
     }
 
     public async Task<IReadOnlyList<ExcelQualityStabilityItemDto>> GetQualityStabilityReportAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default)
     {
         var (fromDate, toDate) = ResolveDates(filter);
-        _logger.LogInformation("دریافت گزارش پایداری کیفی: Reactor={Reactor}, Batch={Batch}", filter.ReactorId, filter.BatchId);
-        return await _repository.GetQualityStabilityReportAsync(filter.ReactorId, filter.BatchId, fromDate, toDate, cancellationToken);
+        _logger.LogInformation("دریافت گزارش پایداری کیفی: Reactor={Reactor}, Batch={Batch}, Year={Year}, Month={Month}", filter.ReactorId, filter.BatchId, filter.Year, filter.Month);
+        return await _repository.GetQualityStabilityReportAsync(
+            filter.ReactorId, filter.BatchId, filter.BatchIds, filter.BatchNumbers, filter.Year, filter.Month, fromDate, toDate, cancellationToken);
     }
 
     public async Task<ExcelBreakdownReportDto> GetBreakdownReportAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default)
@@ -99,8 +102,8 @@ public sealed class ExcelReportService : IExcelReportService
 
     public async Task<IReadOnlyList<ExcelMassBalanceItemDto>> GetMassBalanceReportAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("دریافت موازنه جرم: Reactor={Reactor}, Batch={Batch}", filter.ReactorId, filter.BatchId);
-        return await _repository.GetMassBalanceReportAsync(filter.ReactorId, filter.BatchId, cancellationToken);
+        _logger.LogInformation("دریافت موازنه جرم: Reactor={Reactor}, Batch={Batch}, Year={Year}", filter.ReactorId, filter.BatchId, filter.Year);
+        return await _repository.GetMassBalanceReportAsync(filter.ReactorId, filter.BatchId, filter.Year, cancellationToken);
     }
 
     public async Task<ExcelRawLogsPagedResultDto> GetRawLogsAsync(ChartFilterRequestDto filter, string? search, int pageIndex, int pageSize, CancellationToken cancellationToken = default)
