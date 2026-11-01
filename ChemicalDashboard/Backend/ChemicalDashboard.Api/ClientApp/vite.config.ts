@@ -40,6 +40,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/hubs': {
+        target: 'https://localhost:7061',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
       '/swagger': {
         target: 'https://localhost:7061',
         changeOrigin: true,

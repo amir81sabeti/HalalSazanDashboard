@@ -1,5 +1,14 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import * as echarts from 'echarts';
+import {
+  formatChartDate,
+  getSparseInterval,
+  richChartTooltip,
+  richChartSplitLine,
+  richChartAxisLine,
+  richChartAxisLabel,
+} from '@/utils/chartTheme';
 
 interface ProductionTrendChartProps {
   dates: string[];
@@ -16,16 +25,11 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
   azgCumulative,
   agCumulative,
 }) => {
+  const formattedDates = dates.map(formatChartDate);
+
   const option = {
     backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: 'rgba(255, 255, 255, 0.98)',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
-      axisPointer: { type: 'cross', label: { backgroundColor: '#475569' } },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
-    },
+    tooltip: richChartTooltip,
     legend: {
       data: [
         'سرعت تولید (AZG)',
@@ -33,26 +37,29 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
         'مقدار کل محصول (AZG)',
         'مقدار کل آبگیری (AG)',
       ],
-      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 10 },
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
+      textStyle: { color: '#e2e8f0', fontFamily: 'BYekan', fontSize: 10 },
       top: 0,
       left: 'center',
     },
     grid: {
       top: 36,
       right: 50,
-      bottom: 30,
+      bottom: 28,
       left: 55,
     },
     xAxis: [
       {
         type: 'category',
-        data: dates,
-        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        data: formattedDates,
+        axisLine: richChartAxisLine,
+        axisTick: { show: false },
         axisLabel: {
-          color: '#64748b',
-          fontFamily: 'BYekan',
-          fontSize: 9,
-          rotate: 30,
+          ...richChartAxisLabel,
+          rotate: 0,
+          interval: getSparseInterval(formattedDates.length, 7),
         },
       },
     ],
@@ -60,27 +67,25 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
       {
         type: 'value',
         name: 'سرعت (لیتر/ساعت)',
-        nameTextStyle: { color: '#64748b', fontSize: 9, fontFamily: 'BYekan' },
-        axisLine: { lineStyle: { color: '#cbd5e1' } },
-        splitLine: { lineStyle: { color: '#f1f5f9' } },
+        nameTextStyle: { color: '#cbd5e1', fontSize: 9, fontFamily: 'BYekan' },
+        axisLine: richChartAxisLine,
+        splitLine: richChartSplitLine,
         axisLabel: {
-          color: '#64748b',
-          fontFamily: 'BYekan',
+          ...richChartAxisLabel,
           fontSize: 9,
-          formatter: (val: number) => `${val / 1000}K`,
+          formatter: (val: number) => `${Math.round(val / 1000)}K`,
         },
       },
       {
         type: 'value',
         name: 'مقدار کل (لیتر)',
-        nameTextStyle: { color: '#64748b', fontSize: 9, fontFamily: 'BYekan' },
-        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        nameTextStyle: { color: '#cbd5e1', fontSize: 9, fontFamily: 'BYekan' },
+        axisLine: richChartAxisLine,
         splitLine: { show: false },
         axisLabel: {
-          color: '#64748b',
-          fontFamily: 'BYekan',
+          ...richChartAxisLabel,
           fontSize: 9,
-          formatter: (val: number) => `${val / 1000}K`,
+          formatter: (val: number) => `${Math.round(val / 1000)}K`,
         },
       },
     ],
@@ -89,13 +94,27 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
         name: 'سرعت تولید (AZG)',
         type: 'bar',
         data: azgRates,
-        itemStyle: { color: '#3b82f6', borderRadius: [3, 3, 0, 0] },
+        barMaxWidth: 18,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#38bdf8' },
+            { offset: 1, color: '#0284c7' },
+          ]),
+          borderRadius: [4, 4, 0, 0],
+        },
       },
       {
         name: 'سرعت آبگیری (AG)',
         type: 'bar',
         data: agRates,
-        itemStyle: { color: '#f59e0b', borderRadius: [3, 3, 0, 0] },
+        barMaxWidth: 18,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#fbbf24' },
+            { offset: 1, color: '#d97706' },
+          ]),
+          borderRadius: [4, 4, 0, 0],
+        },
       },
       {
         name: 'مقدار کل محصول (AZG)',
@@ -103,8 +122,9 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
         yAxisIndex: 1,
         data: azgCumulative,
         itemStyle: { color: '#38bdf8' },
-        lineStyle: { width: 2, color: '#0284c7' },
-        symbol: 'none',
+        lineStyle: { width: 2.5, color: '#38bdf8' },
+        symbol: 'circle',
+        symbolSize: 4,
         smooth: true,
       },
       {
@@ -112,9 +132,10 @@ export const ProductionTrendChart: React.FC<ProductionTrendChartProps> = ({
         type: 'line',
         yAxisIndex: 1,
         data: agCumulative,
-        itemStyle: { color: '#d97706' },
-        lineStyle: { width: 2, color: '#d97706' },
-        symbol: 'none',
+        itemStyle: { color: '#f59e0b' },
+        lineStyle: { width: 2.5, color: '#f59e0b' },
+        symbol: 'circle',
+        symbolSize: 4,
         smooth: true,
       },
     ],

@@ -1,3 +1,4 @@
+using ChemicalDashboard.Api.Realtime;
 using ChemicalDashboard.Application.Interfaces.Services;
 using ChemicalDashboard.Contracts.Chart;
 using ChemicalDashboard.Contracts.Common;
@@ -14,11 +15,16 @@ namespace ChemicalDashboard.Api.Controllers;
 public sealed class ChartController : ControllerBase
 {
     private readonly IProcessChartService _chartService;
+    private readonly IProductionRealtimeNotifier _notifier;
     private readonly ILogger<ChartController> _logger;
 
-    public ChartController(IProcessChartService chartService, ILogger<ChartController> logger)
+    public ChartController(
+        IProcessChartService chartService,
+        IProductionRealtimeNotifier notifier,
+        ILogger<ChartController> logger)
     {
         _chartService = chartService ?? throw new ArgumentNullException(nameof(chartService));
+        _notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -72,5 +78,43 @@ public sealed class ChartController : ControllerBase
 
         var summary = await _chartService.GetDashboardSummaryAsync(filter, cancellationToken);
         return Ok(ApiResponse<DashboardSummaryResponseDto>.Ok(summary, "داده‌های خلاصه داشبورد با موفقیت دریافت شد."));
+    }
+
+    /// <summary>
+    /// ثبت یک رکورد لاگ جدید در جدول dbo.BatchProductionLog و ارسال آنی سیگنال به تمام نمودارها
+    /// </summary>
+    /// <param name="request">مدل ورودی شامل شاخص‌های سرعت، دما، فشار و اسید</param>
+    /// <param name="cancellationToken">توکن لغو درخواست</param>
+    [HttpPost("log")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
+    public async Task<ActionResult<ApiResponse<int>>> CreateBatchLog(
+        [FromBody] InsertBatchLogRequestDto request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("درخواست ثبت لاگ جدید در خط تولید برای راکتور {ReactorId}", request.ReactorId);
+
+        var newId = await _chartService.InsertBatchLogAsync(request, cancellationToken);
+
+        var reactorNum = request.ReactorId == 2 ? 4 : 3;
+
+        // ارسال سیگنال فوری ضربان قلب به تمام کلاینت‌های متصل از طریق SignalR
+        await _notifier.BroadcastDataUpdateAsync(new RealtimeUpdateEvent
+        {
+            EventType = "BATCH_LOG_INSERTED",
+            Message = $"رکورد جدید با شناسه {newId} برای راکتور {reactorNum} در دیتابیس ثبت شد.",
+            ReactorId = request.ReactorId,
+            BatchId = request.BatchId,
+            Timestamp = DateTime.UtcNow,
+            Payload = new
+            {
+                LogId = newId,
+                ProductSpeed = request.ProductSpeed,
+                AcidNumber = request.AcidNumber,
+                InspectionTime = request.InspectionTime
+            }
+        }, cancellationToken);
+
+        return StatusCode(StatusCodes.Status201Created,
+            ApiResponse<int>.Ok(newId, $"رکورد جدید با شناسه {newId} با موفقیت در جدول پایگاه داده ثبت شد و سیگنال نبض به نمودارها شلیک گردید."));
     }
 }

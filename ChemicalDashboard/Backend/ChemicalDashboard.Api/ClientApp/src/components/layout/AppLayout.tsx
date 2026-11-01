@@ -6,11 +6,6 @@ import { ToastViewport } from '@/components/feedback/ToastViewport';
 
 export const AppLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [year, setYear] = useState('1404');
-  const [reactor, setReactor] = useState('all');
-  const [cut, setCut] = useState('all');
-  const [startDate] = useState('1404/01/01');
-  const [endDate] = useState('1404/03/31');
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#edf2f7] text-slate-800 select-none">
@@ -24,14 +19,6 @@ export const AppLayout: React.FC = () => {
       <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
         <Header
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          year={year}
-          onYearChange={setYear}
-          reactor={reactor}
-          onReactorChange={setReactor}
-          cut={cut}
-          onCutChange={setCut}
-          startDate={startDate}
-          endDate={endDate}
         />
 
         {/* ناحیه محتوای پویای صفحه با اسکرول مستقل */}

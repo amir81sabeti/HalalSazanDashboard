@@ -90,7 +90,7 @@ export const ToastViewport: React.FC = () => {
   return (
     <div
       aria-live="polite"
-      className="fixed bottom-5 start-5 z-50 flex flex-col gap-2 pointer-events-auto"
+      className="fixed top-5 left-5 z-50 flex flex-col gap-2.5 pointer-events-auto"
     >
       {toasts.map((toast) => (
         <ToastItemComponent key={toast.id} toast={toast} onDismiss={hideToast} />

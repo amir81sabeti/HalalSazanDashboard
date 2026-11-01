@@ -12,4 +12,6 @@ public interface IProcessChartService
     Task<IReadOnlyList<ProcessChartPointDto>> GetChartDataAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default);
 
     Task<DashboardSummaryResponseDto> GetDashboardSummaryAsync(ChartFilterRequestDto filter, CancellationToken cancellationToken = default);
+
+    Task<int> InsertBatchLogAsync(InsertBatchLogRequestDto request, CancellationToken cancellationToken = default);
 }

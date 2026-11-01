@@ -1,5 +1,13 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import {
+  formatChartDate,
+  getSparseInterval,
+  richChartTooltip,
+  richChartSplitLine,
+  richChartAxisLine,
+  richChartAxisLabel,
+} from '@/utils/chartTheme';
 
 interface ProcessPressureChartProps {
   times: string[];
@@ -14,18 +22,17 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
   columnTopPressure,
   condenserPressure,
 }) => {
+  const formattedTimes = times.map(formatChartDate);
+
   const option = {
     backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
-    },
+    tooltip: richChartTooltip,
     legend: {
       data: ['فشار راکتور', 'فشار بالای ستون', 'فشار ورودی کندانسور'],
-      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 9 },
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
+      textStyle: { color: '#e2e8f0', fontFamily: 'BYekan', fontSize: 9 },
       top: 0,
       left: 'center',
     },
@@ -37,32 +44,33 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
     },
     xAxis: {
       type: 'category',
-      data: times,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      data: formattedTimes,
+      axisLine: richChartAxisLine,
+      axisTick: { show: false },
       axisLabel: {
-        color: '#64748b',
-        fontFamily: 'BYekan',
+        ...richChartAxisLabel,
         fontSize: 8,
-        rotate: 35,
+        rotate: 0,
+        interval: getSparseInterval(formattedTimes.length, 5),
       },
     },
     yAxis: {
       type: 'value',
       name: '(bar) فشار',
-      nameTextStyle: { color: '#64748b', fontSize: 8, fontFamily: 'BYekan' },
+      nameTextStyle: { color: '#cbd5e1', fontSize: 8, fontFamily: 'BYekan' },
       max: 2.5,
       min: 0,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#64748b', fontFamily: 'BYekan', fontSize: 8 },
+      axisLine: richChartAxisLine,
+      splitLine: richChartSplitLine,
+      axisLabel: { ...richChartAxisLabel, fontSize: 8 },
     },
     series: [
       {
         name: 'فشار راکتور',
         type: 'line',
         data: reactorPressure,
-        itemStyle: { color: '#a855f7' },
-        lineStyle: { width: 1.5, color: '#a855f7' },
+        itemStyle: { color: '#c084fc' },
+        lineStyle: { width: 2, color: '#c084fc' },
         symbol: 'none',
         smooth: true,
       },
@@ -70,8 +78,8 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
         name: 'فشار بالای ستون',
         type: 'line',
         data: columnTopPressure,
-        itemStyle: { color: '#0284c7' },
-        lineStyle: { width: 1.5, color: '#0284c7' },
+        itemStyle: { color: '#38bdf8' },
+        lineStyle: { width: 2, color: '#38bdf8' },
         symbol: 'none',
         smooth: true,
       },
@@ -79,8 +87,8 @@ export const ProcessPressureChart: React.FC<ProcessPressureChartProps> = ({
         name: 'فشار ورودی کندانسور',
         type: 'line',
         data: condenserPressure,
-        itemStyle: { color: '#10b981' },
-        lineStyle: { width: 1.5, color: '#10b981' },
+        itemStyle: { color: '#34d399' },
+        lineStyle: { width: 2, color: '#34d399' },
         symbol: 'none',
         smooth: true,
       },

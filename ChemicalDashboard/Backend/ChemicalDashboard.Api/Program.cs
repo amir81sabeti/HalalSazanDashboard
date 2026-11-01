@@ -1,4 +1,5 @@
 using ChemicalDashboard.Api.Middleware;
+using ChemicalDashboard.Api.Realtime;
 using ChemicalDashboard.Application;
 using ChemicalDashboard.Infrastructure;
 using Microsoft.OpenApi;
@@ -11,6 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ثبت کنترلرهای وب API جهت شناسایی کلیه اندپوینت‌ها
 builder.Services.AddControllers();
+
+// ثبت سرویس‌های ارتباط زنده و بلادرنگ سیگنال‌آر (SignalR)
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IProductionRealtimeNotifier, ProductionRealtimeNotifier>();
+
+// ثبت دیده‌بان پس‌زمینه پایگاه داده جهت شناسایی خودکار رکوردهای جدید و ارسال نبض زنده به داشبوردها
+builder.Services.AddHostedService<DatabaseChangeMonitorService>();
 
 // پیکربندی CORS برای اتصال امن فرانت‌اند در محیط توسعه
 builder.Services.AddCors(options =>
@@ -103,6 +111,9 @@ app.UseCors("AllowFrontend");
 
 // مسیریابی و نگاشت کنترلرها
 app.MapControllers();
+
+// نگاشت هاب سیگنال‌آر برای ارتباط بلادرنگ داشبورد
+app.MapHub<ProductionHub>("/hubs/production");
 
 // هدایت تمام درخواست‌های غیر از API به صفحه اصلی فرانت‌اند (پشتیبانی کامل از React Router)
 app.MapFallbackToFile("index.html");

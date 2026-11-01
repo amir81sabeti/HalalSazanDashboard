@@ -92,4 +92,10 @@ public sealed class ProcessChartService : IProcessChartService
 
         return summary;
     }
+
+    public async Task<int> InsertBatchLogAsync(InsertBatchLogRequestDto request, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("درخواست ثبت لاگ جدید در خط تولید برای بچ {BatchId}، راکتور {ReactorId}", request.BatchId, request.ReactorId);
+        return await _chartRepository.InsertBatchLogAsync(request, cancellationToken);
+    }
 }

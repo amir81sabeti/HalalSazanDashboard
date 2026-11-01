@@ -31,4 +31,9 @@ public interface IProcessChartRepository
         DateTime? fromDate,
         DateTime? toDate,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// درج مستقیم یک رکورد لاگ فرآیندی در جدول dbo.BatchProductionLog
+    /// </summary>
+    Task<int> InsertBatchLogAsync(InsertBatchLogRequestDto request, CancellationToken cancellationToken = default);
 }

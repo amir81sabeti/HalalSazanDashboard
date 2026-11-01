@@ -12,6 +12,7 @@
     "api:generate:local": "npx openapi-ts -i ./openapi.json -o ./src/services/generated"
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.11",
     "@tanstack/react-query": "^5.104.1",
     "ag-grid-community": "^36.2.0",
     "ag-grid-react": "^36.2.0",

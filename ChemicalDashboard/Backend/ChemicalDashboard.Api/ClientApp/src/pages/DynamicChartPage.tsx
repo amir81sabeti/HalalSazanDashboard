@@ -23,7 +23,10 @@ import {
   RotateCcw,
   TrendingUp,
   Check,
+  Plus,
 } from 'lucide-react';
+import axios from 'axios';
+import { useRealtime } from '@/services/realtime/RealtimeContext';
 import {
   useBatches,
   useProcessChartData,
@@ -78,13 +81,19 @@ export const DynamicChartPage: React.FC = () => {
   const toast = useToast();
   const echartsRef = useRef<ReactECharts>(null);
 
+  // اشتراک در ارتباط زنده SignalR و ضربان قلب فرآیند
+  const { isConnected: isSignalRConnected, isPulsing, lastUpdate } = useRealtime();
+
   // وضعیت فیلتر راکتور و بچ آبشاری (پیش‌فرض راکتور ۳ با ۳۵ بچ وارد شده از اکسل)
   const [selectedReactorId, setSelectedReactorId] = useState<number | undefined>(1);
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>(undefined);
 
-  // وضعیت تاریخ شمسی
+  // وضعیت تاریخ شمسی (خالی به معنی نمایش کل بازه زمانی بچ به صورت زنده)
   const [fromDateShamsi, setFromDateShamsi] = useState<string>('');
   const [toDateShamsi, setToDateShamsi] = useState<string>('');
+
+  // وضعیت در حال درج رکورد تستی در دیتابیس
+  const [isInserting, setIsInserting] = useState<boolean>(false);
 
   // تنظیمات محور و شاخص‌ها
   const [xAxisMode, setXAxisMode] = useState<'time' | 'dateTime' | 'step'>('dateTime');
@@ -98,6 +107,44 @@ export const DynamicChartPage: React.FC = () => {
     new Set(['productSpeed', 'agSpeed', 'distillationTopTemp', 'reactorPressure'])
   );
 
+  // متد ثبت رکورد واقعی در جدول dbo.BatchProductionLog پایگاه داده
+  const handleInsertSampleLog = async (customSpeed?: number) => {
+    setIsInserting(true);
+    try {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const speed = customSpeed ?? (Math.floor(Math.random() * 800) + 4100);
+      const acid = Number((Math.random() * 0.15 + 0.22).toFixed(2));
+      const agSpeed = Math.floor(Math.random() * 120) + 320;
+      const temp = Number((Math.random() * 3 + 77.5).toFixed(1));
+
+      const payload = {
+        batchId: selectedBatchId ?? (selectedReactorId === 2 ? 400039 : 400035),
+        reactorId: selectedReactorId ?? 1,
+        inspectionTime: timeStr,
+        productSpeed: speed,
+        productAmount: 18500,
+        agSpeed: agSpeed,
+        agAmount: 1250,
+        distillationTopTemp: temp,
+        reactorPressure: 0.85,
+        acidNumber: acid,
+        productDegree: 99.2,
+        description: `ثبت اتوماتیک نبض زنده در ساعت ${timeStr}`,
+      };
+
+      await axios.post('/api/chart/log', payload);
+      toast.success(
+        `رکورد جدید با سرعت ${speed.toLocaleString()} L/h با موفقیت در دیتابیس ثبت شد و به نمودار اضافه گردید.`,
+        'ثبت موفقیت‌آمیز در دیتابیس'
+      );
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || 'خطا در ثبت لاگ در پایگاه داده', 'خطای دیتابیس');
+    } finally {
+      setIsInserting(false);
+    }
+  };
+
   // ۱. واکشی لیست بچ‌ها به تفکیک راکتور (Cascading Dropdown)
   const {
     data: batches = [],
@@ -110,14 +157,16 @@ export const DynamicChartPage: React.FC = () => {
     if (batches.length > 0) {
       const currentExists = batches.some((b) => b.batchId === selectedBatchId);
       if (!currentExists) {
-        // اولویت با بچ ۱ (۴۰۰۰۱۹) یا بچ با لاگ فرآیندی
+        // اولویت با آخرین بچ فعال یا بچ با لاگ فرآیندی
         const bestBatch =
+          batches.find((b) => b.batchId === 400035) ||
           batches.find((b) => b.batchId === 400019) ||
           batches.find((b) => b.logCount > 0) ||
           batches[0];
         setSelectedBatchId(bestBatch.batchId);
-        if (bestBatch.startDateShamsi) setFromDateShamsi(bestBatch.startDateShamsi);
-        if (bestBatch.endDateShamsi) setToDateShamsi(bestBatch.endDateShamsi);
+        // تاریخ‌ها را قفل نکنیم تا تمام لاگ‌های بلادرنگ دریافتی از دیتابیس بدون رفرش نمایش داده شوند
+        setFromDateShamsi('');
+        setToDateShamsi('');
       }
     }
   }, [batches, selectedBatchId]);
@@ -528,6 +577,38 @@ export const DynamicChartPage: React.FC = () => {
             <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
             <span>دانلود تصویر نمودار</span>
           </button>
+          {/* نشانگر نبض زنده و اتصال بلادرنگ به پایگاه داده (ضربان قلب) */}
+          <div
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+              isPulsing
+                ? 'bg-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-500/50 scale-105'
+                : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40'
+            }`}
+            title={
+              isSignalRConnected
+                ? 'اتصال بلادرنگ SignalR با SQL Server فعال است. هر رکوردی در دیتابیس ثبت شود، این نمودار اتوماتیک بروز می‌گردد.'
+                : 'در حال برقراری اتصال به هاب...'
+            }
+          >
+            <Activity className={`w-4 h-4 ${isPulsing ? 'animate-bounce text-white' : 'text-emerald-400'}`} />
+            <span className="flex items-center gap-1.5">
+              <span>{isPulsing ? 'ثبت در دیتابیس شناسایی شد!' : 'نبض زنده دیتابیس'}</span>
+              <span className={`w-2 h-2 rounded-full ${isPulsing ? 'bg-white' : 'bg-emerald-400 animate-ping'}`} />
+            </span>
+          </div>
+
+          {/* دکمه تست ثبت یک رکورد واقعی در جدول پایگاه داده و مشاهده بروزرسانی خودکار نمودار */}
+          <button
+            type="button"
+            disabled={isInserting}
+            onClick={() => handleInsertSampleLog()}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black transition-all shadow-md shadow-emerald-600/25 hover:shadow-lg hover:shadow-emerald-600/35 cursor-pointer disabled:opacity-50"
+            title="ثبت یک رکورد جدید در جدول dbo.BatchProductionLog در SQL Server برای تست ضربان قلب و بروزرسانی خودکار ECharts"
+          >
+            <Plus className={`w-4 h-4 ${isInserting ? 'animate-spin' : ''}`} />
+            <span>{isInserting ? 'در حال ثبت در دیتابیس...' : 'ثبت رکورد در دیتابیس (تست نبض)'}</span>
+          </button>
+
           <button
             type="button"
             onClick={handleRefresh}
@@ -614,9 +695,8 @@ export const DynamicChartPage: React.FC = () => {
                 onChange={(e) => {
                   const val = e.target.value ? Number(e.target.value) : undefined;
                   setSelectedBatchId(val);
-                  const b = batches.find((item) => item.batchId === val);
-                  if (b?.startDateShamsi) setFromDateShamsi(b.startDateShamsi);
-                  if (b?.endDateShamsi) setToDateShamsi(b.endDateShamsi);
+                  setFromDateShamsi('');
+                  setToDateShamsi('');
                 }}
                 disabled={isBatchesLoading}
                 className="w-full bg-slate-50 border border-slate-200/90 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all cursor-pointer"

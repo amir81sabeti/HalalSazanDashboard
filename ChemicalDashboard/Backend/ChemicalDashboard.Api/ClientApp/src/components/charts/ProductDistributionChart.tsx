@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import { richChartTooltip } from '@/utils/chartTheme';
 
 interface ProductDistributionChartProps {
   data: {
@@ -11,23 +12,23 @@ interface ProductDistributionChartProps {
 }
 
 export const ProductDistributionChart: React.FC<ProductDistributionChartProps> = ({ data }) => {
+  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
+      ...richChartTooltip,
       trigger: 'item',
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
       formatter: '{b}: {c} لیتر ({d}%)',
     },
     legend: {
       orient: 'vertical',
       right: 10,
       top: 'center',
-      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 10 },
-      itemWidth: 10,
-      itemHeight: 10,
+      textStyle: { color: '#e2e8f0', fontFamily: 'BYekan', fontSize: 10 },
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
       formatter: (name: string) => {
         const item = data.find((d) => d.name === name);
         return `${name}  ${item?.percentage ?? 0}%`;
@@ -39,9 +40,9 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
         left: '32%',
         top: '42%',
         style: {
-          text: '28,460',
+          text: totalValue > 0 ? totalValue.toLocaleString('fa-IR') : '۲۸,۴۶۰',
           textAlign: 'center',
-          fill: '#0f172a',
+          fill: '#ffffff',
           fontSize: 14,
           fontWeight: 'bold',
           fontFamily: 'BYekan',
@@ -54,7 +55,7 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
         style: {
           text: 'لیتر',
           textAlign: 'center',
-          fill: '#64748b',
+          fill: '#94a3b8',
           fontSize: 10,
           fontFamily: 'BYekan',
         },
@@ -64,14 +65,14 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
       {
         name: 'توزیع محصول',
         type: 'pie',
-        radius: ['52%', '75%'],
+        radius: ['52%', '76%'],
         center: ['38%', '50%'],
         avoidLabelOverlap: false,
         label: {
           show: true,
           position: 'outside',
           formatter: '{d}%',
-          color: '#94a3b8',
+          color: '#cbd5e1',
           fontSize: 9,
           fontFamily: 'BYekan',
         },
@@ -79,7 +80,7 @@ export const ProductDistributionChart: React.FC<ProductDistributionChartProps> =
           show: true,
           length: 6,
           length2: 8,
-          lineStyle: { color: '#475569' },
+          lineStyle: { color: 'rgba(255, 255, 255, 0.3)' },
         },
         data: data.map((item) => ({
           name: item.name,

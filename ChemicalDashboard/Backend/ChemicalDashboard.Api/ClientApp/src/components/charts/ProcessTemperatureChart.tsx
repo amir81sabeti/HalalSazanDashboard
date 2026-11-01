@@ -1,5 +1,13 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import {
+  formatChartDate,
+  getSparseInterval,
+  richChartTooltip,
+  richChartSplitLine,
+  richChartAxisLine,
+  richChartAxisLabel,
+} from '@/utils/chartTheme';
 
 interface ProcessTemperatureChartProps {
   times: string[];
@@ -14,18 +22,17 @@ export const ProcessTemperatureChart: React.FC<ProcessTemperatureChartProps> = (
   columnTopTemp,
   refluxTemp,
 }) => {
+  const formattedTimes = times.map(formatChartDate);
+
   const option = {
     backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
-    },
+    tooltip: richChartTooltip,
     legend: {
       data: ['دمای راکتور', 'دمای بالای ستون', 'دمای سیال ریفلاکس'],
-      textStyle: { color: '#475569', fontFamily: 'BYekan', fontSize: 9 },
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
+      textStyle: { color: '#e2e8f0', fontFamily: 'BYekan', fontSize: 9 },
       top: 0,
       left: 'center',
     },
@@ -37,33 +44,34 @@ export const ProcessTemperatureChart: React.FC<ProcessTemperatureChartProps> = (
     },
     xAxis: {
       type: 'category',
-      data: times,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      data: formattedTimes,
+      axisLine: richChartAxisLine,
+      axisTick: { show: false },
       axisLabel: {
-        color: '#64748b',
-        fontFamily: 'BYekan',
+        ...richChartAxisLabel,
         fontSize: 8,
-        rotate: 35,
+        rotate: 0,
+        interval: getSparseInterval(formattedTimes.length, 5),
       },
     },
     yAxis: {
       type: 'value',
       name: '(°C) دما',
-      nameTextStyle: { color: '#64748b', fontSize: 8, fontFamily: 'BYekan' },
+      nameTextStyle: { color: '#cbd5e1', fontSize: 8, fontFamily: 'BYekan' },
       max: 120,
       min: 0,
       interval: 20,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#64748b', fontFamily: 'BYekan', fontSize: 8 },
+      axisLine: richChartAxisLine,
+      splitLine: richChartSplitLine,
+      axisLabel: { ...richChartAxisLabel, fontSize: 8 },
     },
     series: [
       {
         name: 'دمای راکتور',
         type: 'line',
         data: reactorTemp,
-        itemStyle: { color: '#ef4444' },
-        lineStyle: { width: 1.5, color: '#ef4444' },
+        itemStyle: { color: '#fb7185' },
+        lineStyle: { width: 2, color: '#fb7185' },
         symbol: 'none',
         smooth: true,
       },
@@ -71,8 +79,8 @@ export const ProcessTemperatureChart: React.FC<ProcessTemperatureChartProps> = (
         name: 'دمای بالای ستون',
         type: 'line',
         data: columnTopTemp,
-        itemStyle: { color: '#3b82f6' },
-        lineStyle: { width: 1.5, color: '#3b82f6' },
+        itemStyle: { color: '#38bdf8' },
+        lineStyle: { width: 2, color: '#38bdf8' },
         symbol: 'none',
         smooth: true,
       },
@@ -80,8 +88,8 @@ export const ProcessTemperatureChart: React.FC<ProcessTemperatureChartProps> = (
         name: 'دمای سیال ریفلاکس',
         type: 'line',
         data: refluxTemp,
-        itemStyle: { color: '#10b981' },
-        lineStyle: { width: 1.5, color: '#10b981' },
+        itemStyle: { color: '#34d399' },
+        lineStyle: { width: 2, color: '#34d399' },
         symbol: 'none',
         smooth: true,
       },

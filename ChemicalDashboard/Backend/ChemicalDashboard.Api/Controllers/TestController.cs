@@ -1,3 +1,4 @@
+using ChemicalDashboard.Api.Realtime;
 using ChemicalDashboard.Application.Interfaces.Services;
 using ChemicalDashboard.Contracts.Common;
 using ChemicalDashboard.Contracts.Test;
@@ -15,16 +16,22 @@ namespace ChemicalDashboard.Api.Controllers;
 public sealed class TestController : ControllerBase
 {
     private readonly ITestService _testService;
+    private readonly IProductionRealtimeNotifier _notifier;
     private readonly ILogger<TestController> _logger;
 
     /// <summary>
     /// سازنده کنترلر با تزریق سرویس لایه Application از طریق کانتینر DI
     /// </summary>
     /// <param name="testService">سرویس عملیات تست</param>
+    /// <param name="notifier">سرویس ارسال بلادرنگ سیگنال‌آر</param>
     /// <param name="logger">ثبت وقایع کنترلر</param>
-    public TestController(ITestService testService, ILogger<TestController> logger)
+    public TestController(
+        ITestService testService,
+        IProductionRealtimeNotifier notifier,
+        ILogger<TestController> logger)
     {
         _testService = testService ?? throw new ArgumentNullException(nameof(testService));
+        _notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -86,6 +93,15 @@ public sealed class TestController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError,
                 ApiResponse<bool>.Fail("عملیات درج در پایگاه داده انجام نشد.", false));
         }
+
+        // ارسال سیگنال فوری بلادرنگ به کلاینت‌ها از طریق هاب SignalR
+        await _notifier.BroadcastDataUpdateAsync(new RealtimeUpdateEvent
+        {
+            EventType = "TEST_RECORD_INSERTED",
+            Message = $"رکورد جدید ({request.Name}) در پایگاه داده ثبت شد.",
+            Timestamp = DateTime.UtcNow,
+            Payload = new { Name = request.Name, Age = request.Age }
+        }, cancellationToken);
 
         // برگرداندن کد وضعیت 201 Created به عنوان نتیجه موفقیت‌آمیز درج منبع جدید
         return StatusCode(StatusCodes.Status201Created,

@@ -145,5 +145,67 @@ public sealed class ProcessChartRepository : IProcessChartRepository
 
         return result;
     }
+
+    public async Task<int> InsertBatchLogAsync(InsertBatchLogRequestDto request, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("درج رکورد جدید در dbo.BatchProductionLog توسط Dapper");
+        await using var connection = await _connectionFactory.CreateOpenConnectionAsync(cancellationToken);
+
+        int batchId = request.BatchId ?? 0;
+        int reactorId = request.ReactorId ?? 1;
+
+        if (batchId <= 0)
+        {
+            batchId = await connection.ExecuteScalarAsync<int>(
+                "SELECT TOP 1 BatchId FROM dbo.Batch WHERE ReactorId = @ReactorId AND IsFinished = 0 ORDER BY BatchId DESC;",
+                new { ReactorId = reactorId });
+
+            if (batchId <= 0)
+            {
+                batchId = await connection.ExecuteScalarAsync<int>(
+                    "SELECT TOP 1 BatchId FROM dbo.Batch WHERE ReactorId = @ReactorId ORDER BY BatchId DESC;",
+                    new { ReactorId = reactorId });
+            }
+        }
+
+        var batchNum = await connection.ExecuteScalarAsync<int?>(
+            "SELECT BatchNum FROM dbo.Batch WHERE BatchId = @BatchId;",
+            new { BatchId = batchId }) ?? 65;
+
+        var timeStr = string.IsNullOrWhiteSpace(request.InspectionTime)
+            ? DateTime.Now.ToString("HH:mm:ss")
+            : request.InspectionTime;
+
+        var sql = @"
+            INSERT INTO dbo.BatchProductionLog (
+                BatchId, BatchNumber, InspectionTime, ProductAmount, ProductSpeed, AGAmount, AGSpeed,
+                DistillationTopTemp, ReactorPressure, AcidNumber, ProductDegree,
+                CreatedDate, OperatorManualDate, IsSabt, Description
+            ) VALUES (
+                @BatchId, @BatchNumber, @InspectionTime, @ProductAmount, @ProductSpeed, @AGAmount, @AGSpeed,
+                @DistillationTopTemp, @ReactorPressure, @AcidNumber, @ProductDegree,
+                GETDATE(), GETDATE(), 1, @Description
+            );
+            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+        var newId = await connection.ExecuteScalarAsync<int>(sql, new
+        {
+            BatchId = batchId,
+            BatchNumber = batchNum.ToString(),
+            InspectionTime = timeStr,
+            ProductAmount = request.ProductAmount,
+            ProductSpeed = request.ProductSpeed,
+            AGAmount = request.AGAmount,
+            AGSpeed = request.AGSpeed,
+            DistillationTopTemp = request.DistillationTopTemp,
+            ReactorPressure = request.ReactorPressure,
+            AcidNumber = request.AcidNumber,
+            ProductDegree = request.ProductDegree,
+            Description = request.Description
+        });
+
+        _logger.LogInformation("رکورد با شناسه {NewId} در dbo.BatchProductionLog ثبت شد.", newId);
+        return newId;
+    }
 }
 

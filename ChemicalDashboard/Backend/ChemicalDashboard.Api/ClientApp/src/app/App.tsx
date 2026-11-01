@@ -2,6 +2,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { ToastProvider } from '@/components/feedback/ToastContext';
+import { RealtimeProvider } from '@/services/realtime/RealtimeContext';
 import { router } from '@/routes';
 import { initializeGeneratedApiClient } from '@/services/api';
 
@@ -23,7 +24,9 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <RouterProvider router={router} />
+        <RealtimeProvider>
+          <RouterProvider router={router} />
+        </RealtimeProvider>
       </ToastProvider>
     </QueryClientProvider>
   );

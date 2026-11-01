@@ -1,5 +1,12 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import * as echarts from 'echarts';
+import {
+  richChartTooltip,
+  richChartSplitLine,
+  richChartAxisLine,
+  richChartAxisLabel,
+} from '@/utils/chartTheme';
 
 interface BatchSpeedChartProps {
   data: {
@@ -14,12 +21,9 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
+      ...richChartTooltip,
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#0f172a', fontFamily: 'BYekan', fontSize: 11 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px;',
       formatter: (params: Array<{ name: string; value: number }>) => {
         const p = params[0];
         return `${p.name}: ${p.value.toLocaleString('fa-IR')} لیتر/ساعت`;
@@ -33,31 +37,38 @@ export const BatchSpeedChart: React.FC<BatchSpeedChartProps> = ({ data }) => {
     },
     xAxis: {
       type: 'value',
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
+      axisLine: richChartAxisLine,
+      splitLine: richChartSplitLine,
       axisLabel: {
-        color: '#64748b',
-        fontFamily: 'BYekan',
+        ...richChartAxisLabel,
         fontSize: 8,
-        formatter: (val: number) => `${val / 1000}K`,
+        formatter: (val: number) => `${Math.round(val / 1000)}K`,
       },
     },
     yAxis: {
       type: 'category',
       data: reversed.map((d) => d.batchName),
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      axisLabel: { color: '#64748b', fontFamily: 'BYekan', fontSize: 9 },
+      axisLine: richChartAxisLine,
+      axisTick: { show: false },
+      axisLabel: { ...richChartAxisLabel, fontSize: 9 },
     },
     series: [
       {
         name: 'سرعت تولید',
         type: 'bar',
+        barMaxWidth: 16,
         data: reversed.map((d) => d.speed),
-        itemStyle: { color: '#38bdf8', borderRadius: [0, 4, 4, 0] },
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
+            { offset: 0, color: '#38bdf8' },
+            { offset: 1, color: '#0369a1' },
+          ]),
+          borderRadius: [0, 4, 4, 0],
+        },
         label: {
           show: true,
           position: 'right',
-          color: '#475569',
+          color: '#cbd5e1',
           fontSize: 9,
           fontFamily: 'BYekan',
           formatter: (params: { value: number }) => params.value.toLocaleString('fa-IR'),

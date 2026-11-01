@@ -77,6 +77,39 @@ h1, h2, h3, h4, .font-title {
   border-color: rgba(255, 255, 255, 0.14);
 }
 
+/* هایلایت نئونی و درخشش فوق‌العاده زیبا روی هاور کارت‌ها و جداول، برگرفته از طرح هوش مصنوعی */
+.ai-glow-card {
+  transition: border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-glow-card:hover {
+  border-color: rgba(14, 165, 233, 0.75) !important;
+  box-shadow: 0 0 20px -2px rgba(14, 165, 233, 0.35),
+              inset 0 0 12px rgba(14, 165, 233, 0.05),
+              0 8px 20px -4px rgba(15, 23, 42, 0.12) !important;
+  transform: translateY(-2px);
+}
+
+.dark .ai-glow-card:hover,
+[data-theme='dark'] .ai-glow-card:hover {
+  border-color: rgba(56, 189, 248, 0.85) !important;
+  box-shadow: 0 0 25px -2px rgba(56, 189, 248, 0.5),
+              inset 0 0 16px rgba(56, 189, 248, 0.12),
+              0 12px 28px -4px rgba(0, 0, 0, 0.45) !important;
+  transform: translateY(-2px);
+}
+
+/* حالت هایلایت کهربایی/طلایی ویژه (مشابه کارت فعال در طرح AI) */
+.ai-glow-card-amber:hover {
+  border-color: rgba(245, 158, 11, 0.85) !important;
+  box-shadow: 0 0 24px -2px rgba(245, 158, 11, 0.45),
+              inset 0 0 14px rgba(245, 158, 11, 0.1),
+              0 10px 24px -4px rgba(15, 23, 42, 0.12) !important;
+  transform: translateY(-2px);
+}
+
 /* افکت درخشش امبر (Industrial Amber Glow) */
 .glow-amber {
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
@@ -107,3 +140,43 @@ h1, h2, h3, h4, .font-title {
 input, select, textarea, button {
   font-family: inherit;
 }
+
+/* =========================================================================
+   انیمیشن نبض و ضربان قلب (ECG Heartbeat) برای المان‌ها و نمودارهای داشبورد
+   هنگام دریافت بسته داده‌های جدید از طریق SignalR
+   ========================================================================= */
+@keyframes ecgHeartbeat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+  14% {
+    transform: scale(1.018);
+    box-shadow: 0 0 25px 4px rgba(16, 185, 129, 0.5), inset 0 0 15px rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.85) !important;
+  }
+  28% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+  42% {
+    transform: scale(1.026);
+    box-shadow: 0 0 35px 6px rgba(16, 185, 129, 0.65), inset 0 0 20px rgba(16, 185, 129, 0.25);
+    border-color: rgba(16, 185, 129, 0.95) !important;
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 12px 0 rgba(16, 185, 129, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.heartbeat-pulse {
+  animation: ecgHeartbeat 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
+  z-index: 10;
+  position: relative;
+}
+
